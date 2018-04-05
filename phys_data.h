@@ -25,6 +25,7 @@ private:
     Vector2 location_;
     Vector2 velocity_;
     float bounce_;
+
 };
 
 #endif // PHYS_DATA_H

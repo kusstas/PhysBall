@@ -2,6 +2,9 @@
 #define PHYS_ENGINE_H
 
 #include <QObject>
+#include <QThread>
+
+#include "phys_worker.h"
 #include "phys_data.h"
 
 class Ball;
@@ -12,7 +15,20 @@ class PhysEngine : public QObject
 
 public:
 
-    explicit PhysEngine(QObject* parrent = nullptr);
+    explicit PhysEngine(Ball& ball, QObject* parent = nullptr);
+
+    void start();
+
+    float getTimeScale() const;
+    const Vector2& getVectorG() const;
+
+    float getTopWall() const;
+    float getLeftWall() const;
+    float getBottomWall() const;
+    float getRightWall() const;
+
+    void setTimeScale(float scale);
+    void setVectorG(const Vector2& vectorG);
 
     void setTopWall(float yLine);
     void setLeftWall(float xLine);
@@ -21,22 +37,28 @@ public:
 
 signals:
 
-    void newLocation(const Vector2& vector2);
+    void started();
+    void finished();
+
+    void newLocation(Vector2 vector2);
 
 public slots:
 
-    void createdBall(Ball& ball);
+    void resultReady(PhysData physData);
 
 private:
 
     Ball* ball;
+    PhysWorker worker;
+    QThread thread;
 
     float topWall;
     float leftWall;
     float bottomWall;
     float rightWall;
 
-    PhysData compute(const PhysData& physData, const Vector2& vectorG, float time);
+    float timeScale;
+    Vector2 vectorG;
 
 };
 

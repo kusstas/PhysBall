@@ -1,16 +1,7 @@
 #include "ball.h"
 
-Ball::Ball() : radius_(25.0f)
+Ball::Ball(QObject* parent) : QObject(parent)
 {
-}
-
-Ball::Ball(float radius) : radius_(radius)
-{
-}
-
-Ball::Ball(Vector2 location, float radius) : radius_(radius)
-{
-    setLocation(location);
 }
 
 //---------------------------------------------------------
@@ -28,11 +19,6 @@ const Vector2& Ball::getLocation() const
 const Vector2& Ball::getVelocity() const
 {
     return physData_.getVelocity();
-}
-
-float Ball::getRadius() const
-{
-    return radius_;
 }
 
 float Ball::getBounce() const
@@ -70,12 +56,6 @@ void Ball::setVelocity(float x, float y)
 }
 
 //---------------------------------------------------------
-
-void Ball::setRadius(float radius)
-{
-    if (radius > 0.0)
-        radius_ = radius;
-}
 
 void Ball::setBounce(float bounce)
 {
