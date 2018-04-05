@@ -2,8 +2,8 @@
 #define PHYS_ENGINE_H
 
 #include <QObject>
+#include "phys_data.h"
 
-struct Vector2;
 class Ball;
 
 class PhysEngine : public QObject
@@ -21,11 +21,11 @@ public:
 
 signals:
 
-    void finished();
+    void newLocation(const Vector2& vector2);
 
 public slots:
 
-    //void createdBall(Ball& ball);
+    void createdBall(Ball& ball);
 
 private:
 
@@ -35,6 +35,8 @@ private:
     float leftWall;
     float bottomWall;
     float rightWall;
+
+    PhysData compute(const PhysData& physData, const Vector2& vectorG, float time);
 
 };
 
