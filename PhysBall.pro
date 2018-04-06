@@ -29,13 +29,15 @@ SOURCES += \
     ball.cpp \
     phys_engine.cpp \
     phys_data.cpp \
-    phys_worker.cpp
+    phys_worker.cpp \
+    renderer.cpp
 
 HEADERS += \
     vector2.h \
     ball.h \
     phys_engine.h \
     phys_data.h \
-    phys_worker.h
+    phys_worker.h \
+    renderer.h
 
 FORMS +=

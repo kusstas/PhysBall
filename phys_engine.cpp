@@ -2,7 +2,6 @@
 #include "phys_worker.h"
 #include "ball.h"
 
-
 PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*this, ball)
 {
     this->ball = &ball;
@@ -15,10 +14,13 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*t
     leftWall = 0.0f;
     rightWall = 0.0f;
 
-    worker.moveToThread(&thread);
-    connect(&worker, &PhysWorker::resultReady, this, &PhysEngine::resultReady);
+
+    qRegisterMetaType<PhysData>("PhysData");
+    connect(&worker, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
     connect(&worker, &PhysWorker::finished, &thread, &QThread::quit);
     connect(&thread, &QThread::started, &worker, &PhysWorker::work);
+
+    worker.moveToThread(&thread);
 }
 
 //---------------------------------------------------------
@@ -26,6 +28,7 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*t
 void PhysEngine::start()
 {
     thread.start();
+    emit started;
 }
 
 float PhysEngine::getTimeScale() const
@@ -98,7 +101,6 @@ void PhysEngine::setRightWall(float xLine)
 
 void PhysEngine::resultReady(PhysData physData)
 {
-    throw;
     ball->setPhysData(physData);
     emit newLocation(physData.getLocation());
 }

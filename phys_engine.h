@@ -38,7 +38,6 @@ public:
 signals:
 
     void started();
-    void finished();
 
     void newLocation(Vector2 vector2);
 

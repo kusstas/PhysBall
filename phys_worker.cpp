@@ -14,7 +14,7 @@ PhysWorker::PhysWorker(PhysEngine& owner, Ball& ball, QObject *parent) : QObject
 
 void PhysWorker::work()
 {
-    const float t_scale = 0.002f;
+    const int msSleep = 2;
     isWork = true;
     emit started();
     while(isWork)
@@ -22,9 +22,11 @@ void PhysWorker::work()
         if (ball != nullptr)
         {
             const PhysData& pd = ball->getPhysData();
-            PhysData new_pd = compute(pd, owner->getVectorG(), owner->getTimeScale() * t_scale);
+            PhysData new_pd = compute(pd, owner->getVectorG(),
+                owner->getTimeScale() * msSleep * 0.001f);
             emit resultReady(new_pd);
         }
+        QThread::msleep(msSleep);
     }
     emit finished();
 }
@@ -41,9 +43,6 @@ PhysData PhysWorker::compute(const PhysData& physData, const Vector2& vectorG, f
     PhysData pd;
     Vector2 loc = physData.getLocation();
     Vector2 v = physData.getVelocity();
-
-    v += vectorG * time;
-    loc += v * time;
 
     if (loc.x < owner->getLeftWall())
     {
@@ -66,6 +65,9 @@ PhysData PhysWorker::compute(const PhysData& physData, const Vector2& vectorG, f
         loc.y = owner->getBottomWall();
         v.y *= -physData.getBounce();
     }
+
+    v += vectorG * time;
+    loc += v * time;
 
     pd.setLocation(loc);
     pd.setVelocity(v);
