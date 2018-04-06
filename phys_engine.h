@@ -16,6 +16,7 @@ class PhysEngine : public QObject
 public:
 
     explicit PhysEngine(Ball& ball, QObject* parent = nullptr);
+    ~PhysEngine();
 
     void start();
 

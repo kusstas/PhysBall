@@ -17,10 +17,15 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*t
 
     qRegisterMetaType<PhysData>("PhysData");
     connect(&worker, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
-    connect(&worker, &PhysWorker::finished, &thread, &QThread::quit);
+    connect(&worker, &PhysWorker::finished, &thread, &QThread::terminate);
     connect(&thread, &QThread::started, &worker, &PhysWorker::work);
 
     worker.moveToThread(&thread);
+}
+
+PhysEngine::~PhysEngine()
+{
+    thread.terminate();
 }
 
 //---------------------------------------------------------
@@ -28,7 +33,7 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*t
 void PhysEngine::start()
 {
     thread.start();
-    emit started;
+    emit started();
 }
 
 float PhysEngine::getTimeScale() const

@@ -30,7 +30,10 @@ SOURCES += \
     phys_engine.cpp \
     phys_data.cpp \
     phys_worker.cpp \
-    renderer.cpp
+    renderer.cpp \
+    render_worker.cpp \
+    mediator.cpp \
+    form.cpp
 
 HEADERS += \
     vector2.h \
@@ -38,6 +41,10 @@ HEADERS += \
     phys_engine.h \
     phys_data.h \
     phys_worker.h \
-    renderer.h
+    renderer.h \
+    render_worker.h \
+    mediator.h \
+    form.h
 
-FORMS +=
+FORMS += \
+    form.ui

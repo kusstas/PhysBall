@@ -1,4 +1,5 @@
 #include "phys_worker.h"
+
 #include "phys_engine.h"
 #include "ball.h"
 
@@ -23,7 +24,7 @@ void PhysWorker::work()
         {
             const PhysData& pd = ball->getPhysData();
             PhysData new_pd = compute(pd, owner->getVectorG(),
-                owner->getTimeScale() * msSleep * 0.001f);
+                                      owner->getTimeScale() * msSleep * 0.001f);
             emit resultReady(new_pd);
         }
         QThread::msleep(msSleep);
