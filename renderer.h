@@ -2,10 +2,11 @@
 #define RENDERER_H
 
 #include <QObject>
-#include <QThread>
 
 #include "vector2.h"
 #include "render_worker.h"
+
+class MainWindow;
 
 class Renderer : public QObject
 {
@@ -13,8 +14,10 @@ class Renderer : public QObject
 
 public:
 
-    explicit Renderer(QObject* parent = nullptr);
+    explicit Renderer(MainWindow& drawWindow, QObject* parent = nullptr);
     ~Renderer();
+
+    static const int ms_period = 20;
 
     void start();
     void setSize(const Vector2& size);
@@ -30,7 +33,7 @@ public slots:
 private:
 
     RenderWorker worker;
-    QThread thread;
+    QThread* thread;
 
     Vector2 size;
 

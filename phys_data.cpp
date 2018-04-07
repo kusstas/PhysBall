@@ -1,4 +1,5 @@
 #include "phys_data.h"
+#include <QTextStream>
 
 
 PhysData::PhysData() : bounce_(1.0f)
@@ -49,5 +50,25 @@ void PhysData::setVelocity(float x, float y)
 void PhysData::setBounce(float bounce)
 {
     if (bounce >= 0.0f)
+    {
         bounce_ = bounce;
+    }
+}
+
+//---------------------------------------------------------
+
+QTextStream& operator << (QTextStream& s, const PhysData& pd)
+{
+    s << pd.location_.x << ' ' << pd.location_.y << '\n';
+    s << pd.velocity_.x << ' ' << pd.velocity_.y << '\n';
+    s << pd.bounce_;
+    return s;
+}
+
+QTextStream& operator >> (QTextStream& s, PhysData& pd)
+{
+    s >> pd.location_.x >> pd.location_.y;
+    s >> pd.velocity_.x >> pd.velocity_.y;
+    s >> pd.bounce_;
+    return s;
 }

@@ -24,7 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
+    main.cpp \
     vector2.cpp \
     ball.cpp \
     phys_engine.cpp \
@@ -33,7 +33,7 @@ SOURCES += \
     renderer.cpp \
     render_worker.cpp \
     mediator.cpp \
-    form.cpp
+    main_window.cpp
 
 HEADERS += \
     vector2.h \
@@ -44,7 +44,7 @@ HEADERS += \
     renderer.h \
     render_worker.h \
     mediator.h \
-    form.h
+    main_window.h
 
 FORMS += \
-    form.ui
+    main_window.ui

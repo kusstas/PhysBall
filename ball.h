@@ -2,6 +2,8 @@
 #define BALL_H
 
 #include <QObject>
+#include <QString>
+
 #include "phys_data.h"
 
 class Ball : public QObject
@@ -9,6 +11,7 @@ class Ball : public QObject
 public:
 
     explicit Ball(QObject* parent = nullptr);
+    ~Ball();
 
     const PhysData& getPhysData() const;
 
@@ -27,7 +30,12 @@ public:
 
 private:
 
+    const QString fileSave = "fileSave.txt";
     PhysData physData_;
+
+    bool readPhysData();
+    void writePhysData();
+
 };
 
 #endif // BALL_H

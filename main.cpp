@@ -5,26 +5,27 @@
 #include "renderer.h"
 #include "mediator.h"
 
-#include "form.h"
+#include "main_window.h"
+
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Form form;
-    form.show();
-
     Ball ball;
-    ball.setVelocity(10, 20);
-    ball.setBounce(0.95f);
 
     PhysEngine physEngine(ball);
-    physEngine.setTopWall(100.0f);
-    physEngine.setLeftWall(-100.0f);
-    physEngine.setRightWall(100.0f);
-    physEngine.setBottomWall(-200.0f);
+    physEngine.setTimeScale(5);
+    physEngine.setTopWall(300.0f);
+    physEngine.setLeftWall(-300.0f);
+    physEngine.setRightWall(300.0f);
+    physEngine.setBottomWall(-300.0f);
 
-    Renderer renderer;
+    MainWindow mainWindow;
+    mainWindow.show();
+
+    Renderer renderer(mainWindow);
 
     Mediator(renderer, physEngine);
 

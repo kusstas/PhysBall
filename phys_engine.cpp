@@ -2,6 +2,8 @@
 #include "phys_worker.h"
 #include "ball.h"
 
+#include <QThread>
+
 PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*this, ball)
 {
     this->ball = &ball;
@@ -15,24 +17,27 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*t
     rightWall = 0.0f;
 
 
+    thread = new QThread();
     qRegisterMetaType<PhysData>("PhysData");
     connect(&worker, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
-    connect(&worker, &PhysWorker::finished, &thread, &QThread::terminate);
-    connect(&thread, &QThread::started, &worker, &PhysWorker::work);
+    connect(&worker, &PhysWorker::finished, thread, &QThread::quit);
+    connect(thread, &QThread::started, &worker, &PhysWorker::work);
 
-    worker.moveToThread(&thread);
+    worker.moveToThread(thread);
 }
 
 PhysEngine::~PhysEngine()
 {
-    thread.terminate();
+    thread->quit();
+    thread->quit();
+    thread->deleteLater();
 }
 
 //---------------------------------------------------------
 
 void PhysEngine::start()
 {
-    thread.start();
+    thread->start();
     emit started();
 }
 

@@ -3,6 +3,8 @@
 
 #include "vector2.h"
 
+class QTextStream;
+
 struct PhysData
 {
 public:
@@ -20,6 +22,9 @@ public:
     void setVelocity(float x, float y);
     void setBounce(float bounce);
 
+    friend QTextStream& operator << (QTextStream& s, const PhysData& pd);
+    friend QTextStream& operator >> (QTextStream& s, PhysData& pd);
+
 private:
 
     Vector2 location_;
@@ -27,5 +32,8 @@ private:
     float bounce_;
 
 };
+
+QTextStream& operator << (QTextStream& s, const PhysData& pd);
+QTextStream& operator >> (QTextStream& s, PhysData& pd);
 
 #endif // PHYS_DATA_H

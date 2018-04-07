@@ -1,9 +1,7 @@
 #include "render_worker.h"
+#include "renderer.h"
 
 #include <QThread>
-
-#include <QDebug>
-
 
 RenderWorker::RenderWorker(Renderer& owner, QObject* parent) : QObject(parent)
 {
@@ -16,8 +14,8 @@ void RenderWorker::work()
     isWork = true;
     while(isWork)
     {
-        qDebug() << t.x << " " << t.y;
-        QThread::msleep(500);
+        emit drawBall(locationBall);
+        QThread::msleep(Renderer::ms_period);
     }
     emit finished();
 }
@@ -29,5 +27,5 @@ void RenderWorker::stop()
 
 void RenderWorker::update(Vector2 location)
 {
-    t = location;
+    locationBall = location;
 }

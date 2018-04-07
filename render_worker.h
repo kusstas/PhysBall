@@ -20,6 +20,8 @@ signals:
     void started();
     void finished();
 
+    void drawBall(Vector2 location);
+
 public slots:
 
     void work();
@@ -32,7 +34,7 @@ private:
     Renderer* owner;
     bool isWork;
 
-    Vector2 t;
+    Vector2 locationBall;
 
 };
 

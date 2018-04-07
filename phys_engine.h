@@ -2,7 +2,6 @@
 #define PHYS_ENGINE_H
 
 #include <QObject>
-#include <QThread>
 
 #include "phys_worker.h"
 #include "phys_data.h"
@@ -17,6 +16,8 @@ public:
 
     explicit PhysEngine(Ball& ball, QObject* parent = nullptr);
     ~PhysEngine();
+
+    static const int ms_period = 2;
 
     void start();
 
@@ -49,8 +50,8 @@ public slots:
 private:
 
     Ball* ball;
+    QThread* thread;
     PhysWorker worker;
-    QThread thread;
 
     float topWall;
     float leftWall;

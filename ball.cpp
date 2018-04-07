@@ -1,7 +1,21 @@
 #include "ball.h"
 
+#include <QTextStream>
+#include <QFile>
+
 Ball::Ball(QObject* parent) : QObject(parent)
 {
+    bool isReaded = readPhysData();
+    if (!isReaded)
+    {
+        setVelocity(100, 90);
+        setBounce(0.95f);
+    }
+}
+
+Ball::~Ball()
+{
+    writePhysData();
 }
 
 //---------------------------------------------------------
@@ -60,4 +74,35 @@ void Ball::setVelocity(float x, float y)
 void Ball::setBounce(float bounce)
 {
     physData_.setBounce(bounce);
+}
+
+//---------------------------------------------------------
+
+bool Ball::readPhysData()
+{
+    QFile file(fileSave);
+
+    bool isOpen = file.open(QFile::ReadOnly | QFile::Text);
+    if (isOpen)
+    {
+        QTextStream in(&file);
+        in >> physData_;
+    }
+
+    file.close();
+    return isOpen;
+}
+
+void Ball::writePhysData()
+{
+    QFile file(fileSave);
+
+    bool isOpen = file.open(QFile::WriteOnly | QFile::Text);
+    if (isOpen)
+    {
+        QTextStream out(&file);
+        out << physData_;
+    }
+    file.flush();
+    file.close();
 }
