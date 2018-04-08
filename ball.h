@@ -11,7 +11,7 @@ class Ball : public QObject
 public:
 
     explicit Ball(QObject* parent = nullptr);
-    ~Ball();
+    virtual ~Ball();
 
     const PhysData& getPhysData() const;
 

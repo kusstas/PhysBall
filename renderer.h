@@ -15,12 +15,11 @@ class Renderer : public QObject
 public:
 
     explicit Renderer(MainWindow& drawWindow, QObject* parent = nullptr);
-    ~Renderer();
+    virtual ~Renderer();
 
     static const int ms_period = 20;
 
     void start();
-    void setSize(const Vector2& size);
 
 signals:
 
@@ -34,8 +33,6 @@ private:
 
     RenderWorker worker;
     QThread* thread;
-
-    Vector2 size;
 
 };
 

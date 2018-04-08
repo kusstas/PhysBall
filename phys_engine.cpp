@@ -29,7 +29,6 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), worker(*t
 PhysEngine::~PhysEngine()
 {
     thread->quit();
-    thread->quit();
     thread->deleteLater();
 }
 

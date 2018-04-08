@@ -8,7 +8,7 @@ Ball::Ball(QObject* parent) : QObject(parent)
     bool isReaded = readPhysData();
     if (!isReaded)
     {
-        setVelocity(100, 90);
+        setVelocity(400, 200);
         setBounce(0.95f);
     }
 }

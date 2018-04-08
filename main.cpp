@@ -7,20 +7,17 @@
 
 #include "main_window.h"
 
-
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     Ball ball;
-
     PhysEngine physEngine(ball);
-    physEngine.setTimeScale(5);
     physEngine.setTopWall(300.0f);
     physEngine.setLeftWall(-300.0f);
     physEngine.setRightWall(300.0f);
     physEngine.setBottomWall(-300.0f);
+    physEngine.setVectorG(Vector2(0, -2500));
 
     MainWindow mainWindow;
     mainWindow.show();

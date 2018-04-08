@@ -1,36 +1,18 @@
 #include "vector2.h"
 #include <cmath>
 
-Vector2::Vector2() : x(0.0f), y(0.0f)
-{
-}
+Vector2::Vector2() : x(0.0f), y(0.0f) { }
 
-Vector2::Vector2(float x, float y) : x(x) , y(y)
-{
-}
-
-Vector2::Vector2(const Vector2& vector2) : x(vector2.x), y(vector2.y)
-{
-}
+Vector2::Vector2(float x, float y) : x(x) , y(y) { }
 
 //---------------------------------------------------------
 
-const Vector2& Vector2::operator = (const Vector2& vector2)
+Vector2 Vector2::operator - () const
 {
-    x = vector2.x;
-    y = vector2.y;
-    return *this;
+    return (*this * -1);
 }
 
-Vector2 Vector2::operator + (const Vector2& vector2) const
-{
-    return Vector2(x + vector2.x, y + vector2.y);
-}
-
-Vector2 Vector2::operator - (const Vector2& vector2) const
-{
-    return Vector2(x - vector2.x, y - vector2.y);
-}
+//---------------------------------------------------------
 
 const Vector2& Vector2::operator += (const Vector2& vector2)
 {
@@ -69,6 +51,18 @@ float Vector2::length() const
 
 //---------------------------------------------------------
 
+Vector2 operator + (const Vector2& left, const Vector2& right)
+{
+    return Vector2(left.x + right.x, left.y + right.y);
+}
+
+Vector2 operator - (const Vector2& left, const Vector2& right)
+{
+    return Vector2(left.x - right.x, left.y - right.y);
+}
+
+//---------------------------------------------------------
+
 Vector2 operator * (float i, const Vector2& vector2)
 {
     return Vector2(i * vector2.x, i * vector2.y);
@@ -78,6 +72,8 @@ Vector2 operator * (const Vector2& vector2, float i)
 {
     return Vector2(i * vector2.x, i * vector2.y);
 }
+
+//---------------------------------------------------------
 
 Vector2 operator * (int i, const Vector2& vector2)
 {

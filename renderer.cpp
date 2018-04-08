@@ -29,11 +29,6 @@ void Renderer::start()
     thread->start();
 }
 
-void Renderer::setSize(const Vector2& size)
-{
-    this->size = size;
-}
-
 //---------------------------------------------------------
 
 void Renderer::newLocation(Vector2 location)
