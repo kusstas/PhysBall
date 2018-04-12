@@ -4,9 +4,9 @@
 #include <QObject>
 
 #include "vector2.h"
-#include "render_worker.h"
 
 class MainWindow;
+class RenderWorker;
 
 class Renderer : public QObject
 {
@@ -31,7 +31,7 @@ public slots:
 
 private:
 
-    RenderWorker worker;
+    RenderWorker* worker;
     QThread* thread;
 
 };

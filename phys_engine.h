@@ -2,11 +2,10 @@
 #define PHYS_ENGINE_H
 
 #include <QObject>
-
-#include "phys_worker.h"
 #include "phys_data.h"
 
 class Ball;
+class PhysWorker;
 
 class PhysEngine : public QObject
 {
@@ -51,7 +50,7 @@ private:
 
     Ball* ball;
     QThread* thread;
-    PhysWorker worker;
+    PhysWorker* worker;
 
     float topWall;
     float leftWall;
