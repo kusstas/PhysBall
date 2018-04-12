@@ -13,7 +13,7 @@ class PhysWorker : public QObject
 
 public:
 
-    explicit PhysWorker(PhysEngine& owner, Ball& ball, QObject *parent = nullptr);
+    explicit PhysWorker(PhysEngine& owner, Ball& ball, QObject* parent = nullptr);
 
 signals:
 

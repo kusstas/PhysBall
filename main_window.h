@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
 
 public:
 
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget* parent = 0);
     virtual ~MainWindow();
 
 public slots:
@@ -24,7 +24,7 @@ public slots:
 
 private:
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
     Vector2 locationBall;
 
 protected:

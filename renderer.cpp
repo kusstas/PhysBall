@@ -12,7 +12,7 @@ Renderer::Renderer(MainWindow& drawWindow, QObject* parent) : QObject(parent)
 
     qRegisterMetaType<Vector2>("Vector2");
 
-    connect(this, &Renderer::update, worker, RenderWorker::update, Qt::DirectConnection);
+    connect(this, &Renderer::update, worker, &RenderWorker::update, Qt::DirectConnection);
     connect(thread, &QThread::started, worker, &RenderWorker::work);
     connect(thread, &QThread::destroyed, worker, &RenderWorker::deleteLater);
 
