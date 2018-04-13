@@ -17,7 +17,8 @@ int main(int argc, char *argv[])
     physEngine.setLeftWall(-300.0f);
     physEngine.setRightWall(300.0f);
     physEngine.setBottomWall(-300.0f);
-    physEngine.setVectorG(Vector2(0, -2500));
+    physEngine.setVectorG(Vector2(0, -10));
+    physEngine.setTimeScale(50);
 
     MainWindow mainWindow;
     mainWindow.show();

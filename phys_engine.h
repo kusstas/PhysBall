@@ -17,7 +17,7 @@ public:
     explicit PhysEngine(Ball& ball, QObject* parent = nullptr);
     virtual ~PhysEngine();
 
-    static const int ms_period = 10;
+    static const int ms_period = 1;
 
     void start();
 
