@@ -5,7 +5,7 @@
 
 #include <QThread>
 
-PhysWorker::PhysWorker(PhysEngine& owner, Ball& ball, QObject *parent) : QObject(parent)
+PhysWorker::PhysWorker(PhysEngine& owner, Ball& ball, QObject* parent) : QObject(parent)
 {
     this->owner = &owner;
     this->ball = &ball;
