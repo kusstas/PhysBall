@@ -32,7 +32,6 @@ SOURCES += \
     phys_worker.cpp \
     renderer.cpp \
     render_worker.cpp \
-    mediator.cpp \
     main_window.cpp
 
 HEADERS += \
@@ -43,7 +42,6 @@ HEADERS += \
     phys_worker.h \
     renderer.h \
     render_worker.h \
-    mediator.h \
     main_window.h
 
 FORMS += \

@@ -3,7 +3,6 @@
 #include "ball.h"
 #include "phys_engine.h"
 #include "renderer.h"
-#include "mediator.h"
 
 #include "main_window.h"
 
@@ -25,8 +24,7 @@ int main(int argc, char* argv[])
 
     Renderer renderer(mainWindow);
 
-    Mediator(renderer, physEngine);
-
+    QObject::connect(&physEngine, &PhysEngine::newLocation, &renderer, &Renderer::newLocation, Qt::DirectConnection);
     physEngine.start();
     renderer.start();
 
