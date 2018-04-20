@@ -2,6 +2,7 @@
 #include "ui_main_window.h"
 
 #include <QPainter>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), physEngine_(ball_)
 {
@@ -15,6 +16,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation, Qt::DirectConnection);
     connect(&renderer_, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
+
+    // Log connect
+    connect(&physEngine_, &PhysEngine::started, []() { qDebug() << "-- PhysEngine started"; });
+    connect(&physEngine_, &PhysEngine::finished, []() { qDebug() << "-- PhysEngine finished"; });
+    connect(&renderer_, &Renderer::started, []() { qDebug() << "-- Renderer started"; });
+    connect(&renderer_, &Renderer::finished, []() { qDebug() << "-- Renderer finished"; });
 
     physEngine_.setTopWall(300.0f);
     physEngine_.setLeftWall(-300.0f);
