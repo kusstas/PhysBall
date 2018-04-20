@@ -1,9 +1,17 @@
 #include "ball.h"
 
+#include <QString>
+#include <QInputDialog>
+
 Ball::Ball(QObject* parent) : QObject(parent)
 {
     setVelocity(600, 700);
     setBounce(1.0f);
+
+    QString nickName;
+    while(nickName.isEmpty()) {
+        nickName = QInputDialog::getText(nullptr, "Input dialog", "Enter nickname: ");
+    }
 }
 
 Ball::~Ball()
