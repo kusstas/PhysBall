@@ -39,12 +39,8 @@ void MainWindow::draw(QVector2D location)
 
 void MainWindow::paintEvent(QPaintEvent* event)
 {
-    QMainWindow::paintEvent(event);
-
-    QPainter painter;
-    painter.begin(this);
+    QPainter painter(this);
     painter.drawEllipse(locationBall_.x(), locationBall_.y(), radiusBall_, radiusBall_);
-    painter.end();
 
     QMainWindow::paintEvent(event);
 }
