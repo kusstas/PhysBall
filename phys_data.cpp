@@ -1,6 +1,4 @@
 #include "phys_data.h"
-#include <QTextStream>
-
 
 PhysData::PhysData() : bounce_(1.0f)
 {
@@ -8,43 +6,43 @@ PhysData::PhysData() : bounce_(1.0f)
 
 //---------------------------------------------------------
 
-const Vector2& PhysData::getLocation() const
+const QVector2D& PhysData::location() const
 {
     return location_;
 }
 
-const Vector2& PhysData::getVelocity() const
+const QVector2D& PhysData::velocity() const
 {
     return velocity_;
 }
 
-float PhysData::getBounce() const
+float PhysData::bounce() const
 {
     return bounce_;
 }
 
 //---------------------------------------------------------
 
-void PhysData::setLocation(const Vector2& location)
+void PhysData::setLocation(const QVector2D& location)
 {
     location_ = location;
 }
 
 void PhysData::setLocation(float x, float y)
 {
-    location_ = Vector2(x, y);
+    location_ = QVector2D(x, y);
 }
 
 //---------------------------------------------------------
 
-void PhysData::setVelocity(const Vector2& velocity)
+void PhysData::setVelocity(const QVector2D& velocity)
 {
     velocity_ = velocity;
 }
 
 void PhysData::setVelocity(float x, float y)
 {
-    velocity_ = Vector2(x, y);
+    velocity_ = QVector2D(x, y);
 }
 
 void PhysData::setBounce(float bounce)
@@ -53,22 +51,4 @@ void PhysData::setBounce(float bounce)
     {
         bounce_ = bounce;
     }
-}
-
-//---------------------------------------------------------
-
-QTextStream& operator << (QTextStream& s, const PhysData& pd)
-{
-    s << pd.location_.x << ' ' << pd.location_.y << '\n';
-    s << pd.velocity_.x << ' ' << pd.velocity_.y << '\n';
-    s << pd.bounce_;
-    return s;
-}
-
-QTextStream& operator >> (QTextStream& s, PhysData& pd)
-{
-    s >> pd.location_.x >> pd.location_.y;
-    s >> pd.velocity_.x >> pd.velocity_.y;
-    s >> pd.bounce_;
-    return s;
 }

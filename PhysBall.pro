@@ -25,24 +25,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    vector2.cpp \
     ball.cpp \
     phys_engine.cpp \
     phys_data.cpp \
     phys_worker.cpp \
-    renderer.cpp \
     render_worker.cpp \
-    main_window.cpp
+    main_window.cpp \
+    renderer.cpp
 
 HEADERS += \
-    vector2.h \
     ball.h \
     phys_engine.h \
     phys_data.h \
     phys_worker.h \
-    renderer.h \
     render_worker.h \
-    main_window.h
+    main_window.h \
+    renderer.h
 
 FORMS += \
     main_window.ui

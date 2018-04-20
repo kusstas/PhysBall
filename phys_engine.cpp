@@ -1,119 +1,115 @@
 #include "phys_engine.h"
-#include "phys_worker.h"
 #include "ball.h"
 
-#include <QThread>
-
-PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent)
+PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), ball_(ball), worker_(*this, ball.physData())
 {
-    this->ball = &ball;
+    timeScale_ = 1.0f;
+    vectorG_ = QVector2D(0, -2800.0f);
 
-    timeScale = 1.0f;
-    vectorG = Vector2(0, -9.8f);
+    topWall_ = 0.0f;
+    bottomWall_ = 0.0f;
+    leftWall_ = 0.0f;
+    rightWall_ = 0.0f;
 
-    topWall = 0.0f;
-    bottomWall = 0.0f;
-    leftWall = 0.0f;
-    rightWall = 0.0f;
+    connect(&thread_, &QThread::started, &worker_, &PhysWorker::doWork);
+    connect(&worker_, &PhysWorker::started, this, &PhysEngine::started, Qt::DirectConnection);
+    connect(&worker_, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
+    connect(&worker_, &PhysWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
+    connect(&worker_, &PhysWorker::finished, this, &PhysEngine::finished);
 
-    worker = new PhysWorker(*this, ball);
-    thread = new QThread();
-
-    qRegisterMetaType<PhysData>("PhysData");
-
-    connect(worker, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
-    connect(worker, &PhysWorker::finished, thread, &QThread::quit);
-
-    connect(thread, &QThread::started, worker, &PhysWorker::work);
-    connect(thread, &QThread::destroyed, worker, &PhysWorker::deleteLater);
-
-    worker->moveToThread(thread);
-}
-
-PhysEngine::~PhysEngine()
-{
-    thread->quit();
-    thread->deleteLater();
+    worker_.moveToThread(&thread_);
 }
 
 //---------------------------------------------------------
 
 void PhysEngine::start()
 {
-    thread->start();
-    emit started();
+    thread_.start();
 }
 
-float PhysEngine::getTimeScale() const
+void PhysEngine::stop()
 {
-    return timeScale;
-}
-
-const Vector2& PhysEngine::getVectorG() const
-{
-    return vectorG;
-}
-
-//---------------------------------------------------------
-
-float PhysEngine::getTopWall() const
-{
-    return topWall;
-}
-
-float PhysEngine::getLeftWall() const
-{
-    return leftWall;
-}
-
-float PhysEngine::getBottomWall() const
-{
-    return bottomWall;
-}
-
-float PhysEngine::getRightWall() const
-{
-    return rightWall;
-}
-
-//---------------------------------------------------------
-
-void PhysEngine::setTimeScale(float scale)
-{
-    timeScale = scale;
-}
-
-void PhysEngine::setVectorG(const Vector2& vectorG)
-{
-    this->vectorG = vectorG;
-}
-
-//---------------------------------------------------------
-
-void PhysEngine::setTopWall(float yLine)
-{
-    topWall = yLine;
-}
-
-void PhysEngine::setLeftWall(float xLine)
-{
-    leftWall = xLine;
-}
-
-void PhysEngine::setBottomWall(float yLine)
-{
-    bottomWall = yLine;
-}
-
-void PhysEngine::setRightWall(float xLine)
-{
-    rightWall = xLine;
+    worker_.stop();
+    thread_.wait();
 }
 
 //---------------------------------------------------------
 
 void PhysEngine::resultReady(PhysData physData)
 {
-    ball->setPhysData(physData);
-    emit newLocation(physData.getLocation());
+    ball_.setPhysData(physData);
+    emit updateLocation(physData.location());
+}
+
+//---------------------------------------------------------
+
+bool PhysEngine::isWork() const
+{
+    return worker_.isWork();
+}
+
+float PhysEngine::timeScale() const
+{
+    return timeScale_;
+}
+
+const QVector2D& PhysEngine::vectorG() const
+{
+    return vectorG_;
+}
+
+//---------------------------------------------------------
+
+float PhysEngine::topWall() const
+{
+    return topWall_;
+}
+
+float PhysEngine::leftWall() const
+{
+    return leftWall_;
+}
+
+float PhysEngine::bottomWall() const
+{
+    return bottomWall_;
+}
+
+float PhysEngine::rightWall() const
+{
+    return rightWall_;
+}
+
+//---------------------------------------------------------
+
+void PhysEngine::setTimeScale(float scale)
+{
+    timeScale_ = scale;
+}
+
+void PhysEngine::setVectorG(const QVector2D& vectorG)
+{
+    this->vectorG_ = vectorG;
+}
+
+//---------------------------------------------------------
+
+void PhysEngine::setTopWall(float yLine)
+{
+    topWall_ = yLine;
+}
+
+void PhysEngine::setLeftWall(float xLine)
+{
+    leftWall_ = xLine;
+}
+
+void PhysEngine::setBottomWall(float yLine)
+{
+    bottomWall_ = yLine;
+}
+
+void PhysEngine::setRightWall(float xLine)
+{
+    rightWall_ = xLine;
 }

@@ -1,43 +1,33 @@
 #include "renderer.h"
-#include "render_worker.h"
-#include "main_window.h"
 
-#include <QThread>
-
-
-Renderer::Renderer(MainWindow& drawWindow, QObject* parent) : QObject(parent)
+Renderer::Renderer(QObject* parent) : QObject(parent)
 {
-    thread = new QThread();
-    worker = new RenderWorker(*this);
+    connect(&thread_, &QThread::started, &worker_, &RenderWorker::doWork);
+    connect(this, &Renderer::updateLocation, &worker_, &RenderWorker::updateLocation, Qt::DirectConnection);
+    connect(&worker_, &RenderWorker::started, this, &Renderer::started);
+    connect(&worker_, &RenderWorker::draw, this, &Renderer::draw, Qt::DirectConnection);
+    connect(&worker_, &RenderWorker::finished, this, &Renderer::finished, Qt::DirectConnection);
+    connect(&worker_, &RenderWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
 
-    qRegisterMetaType<Vector2>("Vector2");
-
-    connect(this, &Renderer::update, worker, &RenderWorker::update, Qt::DirectConnection);
-    connect(thread, &QThread::started, worker, &RenderWorker::work);
-    connect(thread, &QThread::destroyed, worker, &RenderWorker::deleteLater);
-
-    connect(worker, &RenderWorker::finished, thread, &QThread::quit);
-    connect(worker, &RenderWorker::drawBall, &drawWindow, &MainWindow::drawBall, Qt::DirectConnection);
-
-    worker->moveToThread(thread);
+    worker_.moveToThread(&thread_);
 }
 
-Renderer::~Renderer()
+//---------------------------------------------------------
+
+bool Renderer::isWork() const
 {
-    thread->quit();
-    thread->deleteLater();
+    return worker_.isWork();
 }
 
 //---------------------------------------------------------
 
 void Renderer::start()
 {
-    thread->start();
+    thread_.start();
 }
 
-//---------------------------------------------------------
-
-void Renderer::newLocation(Vector2 location)
+void Renderer::stop()
 {
-    emit update(location);
+    worker_.stop();
+    thread_.wait();
 }

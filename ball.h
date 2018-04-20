@@ -2,8 +2,6 @@
 #define BALL_H
 
 #include <QObject>
-#include <QString>
-
 #include "phys_data.h"
 
 class Ball : public QObject
@@ -13,29 +11,25 @@ public:
     explicit Ball(QObject* parent = nullptr);
     virtual ~Ball();
 
-    const PhysData& getPhysData() const;
+    const PhysData& physData() const;
 
-    const Vector2& getLocation() const;
-    const Vector2& getVelocity() const;
+    const QVector2D& location() const;
+    const QVector2D& velocity() const;
 
-    float getBounce() const;
+    float bounce() const;
+
     void setPhysData(const PhysData& physData);
 
-    void setLocation(const Vector2& location);
+    void setLocation(const QVector2D& location);
     void setLocation(float x, float y);
 
-    void setVelocity(const Vector2& velocity);
+    void setVelocity(const QVector2D& velocity);
     void setVelocity(float x, float y);
     void setBounce(float bounce);
 
 private:
 
-    const QString fileSave = "fileSave.txt";
     PhysData physData_;
-
-    bool readPhysData();
-    void writePhysData();
-
 };
 
 #endif // BALL_H

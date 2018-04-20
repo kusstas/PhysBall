@@ -2,10 +2,7 @@
 #define RENDER_WORKER_H
 
 #include <QObject>
-
-#include "vector2.h"
-
-class Renderer;
+#include <QVector2D>
 
 class RenderWorker : public QObject
 {
@@ -13,29 +10,35 @@ class RenderWorker : public QObject
 
 public:
 
-    explicit RenderWorker(Renderer& owner, QObject* parent = nullptr);
+    explicit RenderWorker(QObject* parent = nullptr);
+
+    bool isWork() const;
+
+    long periodMs() const;
+    void setPeriodMs(long periodMs);
 
 signals:
 
     void started();
     void finished();
 
-    void drawBall(Vector2 location);
+    void draw(QVector2D location);
 
 public slots:
 
-    void work();
+    void doWork();
     void stop();
 
-    void update(Vector2 location);
+    void updateLocation(QVector2D location);
 
 private:
 
-    Renderer* owner;
-    bool isWork;
+    long periodMs_;
 
-    Vector2 locationBall;
+    bool isWork_;
+    bool isShouldWork_;
 
+    QVector2D location_;
 };
 
 #endif // RENDER_WORKER_H

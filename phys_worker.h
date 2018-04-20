@@ -4,7 +4,6 @@
 #include <QObject>
 #include "phys_data.h"
 
-class Ball;
 class PhysEngine;
 
 class PhysWorker : public QObject
@@ -13,7 +12,12 @@ class PhysWorker : public QObject
 
 public:
 
-    explicit PhysWorker(PhysEngine& owner, Ball& ball, QObject* parent = nullptr);
+    explicit PhysWorker(PhysEngine& owner, const PhysData& physData, QObject* parent = nullptr);
+
+    long periodMs() const;
+    void setPeriodMs(long periodMs);
+
+    bool isWork() const;
 
 signals:
 
@@ -24,17 +28,20 @@ signals:
 
 public slots:
 
-    void work();
+    void doWork();
     void stop();
 
 private:
 
-    bool isWork;
+    bool isWork_;
+    bool isShouldWork_;
 
-    PhysEngine* owner;
-    Ball* ball;
+    const PhysEngine& owner_;
+    const PhysData& physData_;
 
-    PhysData compute(const PhysData& physData, const Vector2& vectorG, float time);
+    long periodMs_;
+
+    PhysData compute(const PhysData& physData, const QVector2D& vectorG, float time);
 
 };
 

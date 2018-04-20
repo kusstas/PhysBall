@@ -2,11 +2,9 @@
 #define RENDERER_H
 
 #include <QObject>
+#include <QThread>
 
-#include "vector2.h"
-
-class MainWindow;
-class RenderWorker;
+#include "render_worker.h"
 
 class Renderer : public QObject
 {
@@ -14,25 +12,27 @@ class Renderer : public QObject
 
 public:
 
-    explicit Renderer(MainWindow& drawWindow, QObject* parent = nullptr);
-    virtual ~Renderer();
+    explicit Renderer(QObject* parent = nullptr);
 
-    static const int ms_period = 20;
-
-    void start();
+    bool isWork() const;
 
 signals:
 
-    void update(Vector2 location);
+    void started();
+    void finished();
+
+    void draw(QVector2D location);
+    void updateLocation(QVector2D location);
 
 public slots:
 
-    void newLocation(Vector2 location);
+    void start();
+    void stop();
 
 private:
 
-    RenderWorker* worker;
-    QThread* thread;
+    RenderWorker worker_;
+    QThread thread_;
 
 };
 

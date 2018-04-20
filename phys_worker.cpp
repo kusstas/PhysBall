@@ -1,75 +1,91 @@
 #include "phys_worker.h"
-
 #include "phys_engine.h"
-#include "ball.h"
 
 #include <QThread>
 
-PhysWorker::PhysWorker(PhysEngine& owner, Ball& ball, QObject* parent) : QObject(parent)
+PhysWorker::PhysWorker(PhysEngine& owner, const PhysData& physData, QObject* parent)
+    : QObject(parent), owner_(owner), physData_(physData)
 {
-    this->owner = &owner;
-    this->ball = &ball;
+    setPeriodMs(5);
 
-    isWork = false;
+    isWork_ = false;
+    isShouldWork_ = false;
 }
 
 //---------------------------------------------------------
 
-void PhysWorker::work()
+void PhysWorker::doWork()
 {
-    isWork = true;
+    isShouldWork_ = true;
+    isWork_ = true;
+
     emit started();
-    while(isWork)
+    while(isShouldWork_)
     {
-        if (ball != nullptr)
-        {
-            const PhysData& pd = ball->getPhysData();
-            PhysData new_pd = compute(pd, owner->getVectorG(),
-                                      owner->getTimeScale() * PhysEngine::ms_period * 0.001f);
-            emit resultReady(new_pd);
-        }
-        QThread::msleep(PhysEngine::ms_period);
+        float time = owner_.timeScale() * periodMs() / 1000;
+        PhysData new_pd = compute(physData_, owner_.vectorG(), time);
+        emit resultReady(new_pd);
+        QThread::msleep(periodMs());
     }
+    isWork_ = false;
     emit finished();
 }
 
 void PhysWorker::stop()
 {
-    isWork = false;
+    isShouldWork_ = false;
 }
 
 //---------------------------------------------------------
 
-PhysData PhysWorker::compute(const PhysData& physData, const Vector2& vectorG, float time)
+bool PhysWorker::isWork() const
+{
+    return isWork_;
+}
+
+long PhysWorker::periodMs() const
+{
+    return periodMs_;
+}
+
+void PhysWorker::setPeriodMs(long periodMs)
+{
+    Q_ASSERT(periodMs > 0);
+    periodMs_ = periodMs;
+}
+
+//---------------------------------------------------------
+
+PhysData PhysWorker::compute(const PhysData& physData, const QVector2D& vectorG, float time)
 {
     PhysData pd;
-    pd.setBounce(physData.getBounce());
-    Vector2 loc = physData.getLocation();
-    Vector2 v = physData.getVelocity();
+    pd.setBounce(physData.bounce());
+    QVector2D loc = physData.location();
+    QVector2D v = physData.velocity();
 
     v += vectorG * time;
     loc += v * time;
 
-    if (loc.x < owner->getLeftWall())
+    if (loc.x() < owner_.leftWall())
     {
-        loc.x = owner->getLeftWall();
-        v.x *= -pd.getBounce();
+        loc.setX(owner_.leftWall());
+        v.setX(v.x() * -pd.bounce());
     }
-    else if (loc.x > owner->getRightWall())
+    else if (loc.x() > owner_.rightWall())
     {
-        loc.x = owner->getRightWall();
-        v.x *= -pd.getBounce();
+        loc.setX(owner_.rightWall());
+        v.setX(v.x() * -pd.bounce());
     }
 
-    if (loc.y > owner->getTopWall())
+    if (loc.y() > owner_.topWall())
     {
-        loc.y = owner->getTopWall();
-        v.y *= -pd.getBounce();
+        loc.setY(owner_.topWall());
+        v.setY(v.y() * -pd.bounce());
     }
-    else if (loc.y < owner->getBottomWall())
+    else if (loc.y() < owner_.bottomWall())
     {
-        loc.y = owner->getBottomWall();
-        v.y *= -pd.getBounce();
+        loc.setY(owner_.bottomWall());
+        v.setY(v.y() * -pd.bounce());;
     }
 
 

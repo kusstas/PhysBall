@@ -1,31 +1,55 @@
 #include "render_worker.h"
-#include "renderer.h"
-
 #include <QThread>
 
-RenderWorker::RenderWorker(Renderer& owner, QObject* parent) : QObject(parent)
+RenderWorker::RenderWorker(QObject* parent) : QObject(parent)
 {
-    this->owner = &owner;
-    isWork = false;
+    setPeriodMs(20);
+
+    isWork_ = false;
+    isShouldWork_ = false;
 }
 
-void RenderWorker::work()
+//---------------------------------------------------------
+
+void RenderWorker::doWork()
 {
-    isWork = true;
-    while(isWork)
+    isShouldWork_ = true;
+    isWork_ = true;
+
+    emit started();
+    while(isShouldWork_)
     {
-        emit drawBall(locationBall);
-        QThread::msleep(Renderer::ms_period);
+        emit draw(location_);
+        QThread::msleep(periodMs());
     }
+    isWork_ = false;
     emit finished();
 }
 
 void RenderWorker::stop()
 {
-    isWork = false;
+    isShouldWork_ = false;
 }
 
-void RenderWorker::update(Vector2 location)
+void RenderWorker::updateLocation(QVector2D location)
 {
-    locationBall = location;
+    location_ = location;
+}
+
+//---------------------------------------------------------
+
+bool RenderWorker::isWork() const
+{
+    return isWork_;
+}
+
+long RenderWorker::periodMs() const
+{
+    return periodMs_;
+}
+
+void RenderWorker::setPeriodMs(long periodMs)
+{
+    Q_ASSERT(periodMs > 0);
+    periodMs_ = periodMs;
 }

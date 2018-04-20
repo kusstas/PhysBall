@@ -2,10 +2,11 @@
 #define PHYS_ENGINE_H
 
 #include <QObject>
-#include "phys_data.h"
+#include <QThread>
+
+#include "phys_worker.h"
 
 class Ball;
-class PhysWorker;
 
 class PhysEngine : public QObject
 {
@@ -14,22 +15,19 @@ class PhysEngine : public QObject
 public:
 
     explicit PhysEngine(Ball& ball, QObject* parent = nullptr);
-    virtual ~PhysEngine();
 
-    static const int ms_period = 1;
+    bool isWork() const;
 
-    void start();
+    float timeScale() const;
+    const QVector2D& vectorG() const;
 
-    float getTimeScale() const;
-    const Vector2& getVectorG() const;
-
-    float getTopWall() const;
-    float getLeftWall() const;
-    float getBottomWall() const;
-    float getRightWall() const;
+    float topWall() const;
+    float leftWall() const;
+    float bottomWall() const;
+    float rightWall() const;
 
     void setTimeScale(float scale);
-    void setVectorG(const Vector2& vectorG);
+    void setVectorG(const QVector2D& vectorG_);
 
     void setTopWall(float yLine);
     void setLeftWall(float xLine);
@@ -39,27 +37,35 @@ public:
 signals:
 
     void started();
-
-    void newLocation(Vector2 vector2);
+    void finished();
+    void updateLocation(QVector2D vector2);
 
 public slots:
+
+    void start();
+    void stop();
+
+private slots:
 
     void resultReady(PhysData physData);
 
 private:
 
-    Ball* ball;
-    QThread* thread;
-    PhysWorker* worker;
+    Ball& ball_;
 
-    float topWall;
-    float leftWall;
-    float bottomWall;
-    float rightWall;
+    QThread thread_;
+    PhysWorker worker_;
 
-    float timeScale;
-    Vector2 vectorG;
+    float topWall_;
+    float leftWall_;
+    float bottomWall_;
+    float rightWall_;
+
+    float timeScale_;
+    QVector2D vectorG_;
 
 };
+
+
 
 #endif // PHYS_ENGINE_H

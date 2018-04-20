@@ -1,32 +1,16 @@
 #include <QApplication>
 
-#include "ball.h"
-#include "phys_engine.h"
-#include "renderer.h"
-
 #include "main_window.h"
+#include "phys_data.h"
 
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
 
-    Ball ball;
-    PhysEngine physEngine(ball);
-    physEngine.setTopWall(300.0f);
-    physEngine.setLeftWall(-300.0f);
-    physEngine.setRightWall(300.0f);
-    physEngine.setBottomWall(-300.0f);
-    physEngine.setVectorG(Vector2(0, -10));
-    physEngine.setTimeScale(50);
+    qRegisterMetaType<PhysData>("PhysData");
 
     MainWindow mainWindow;
     mainWindow.show();
-
-    Renderer renderer(mainWindow);
-
-    QObject::connect(&physEngine, &PhysEngine::newLocation, &renderer, &Renderer::newLocation, Qt::DirectConnection);
-    physEngine.start();
-    renderer.start();
 
     return a.exec();
 }
