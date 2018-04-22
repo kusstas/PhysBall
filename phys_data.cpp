@@ -57,7 +57,7 @@ void PhysData::setBounce(float bounce)
 
 QString PhysData::toString() const
 {
-    QString format = "location x:%1 y:%2; velocity x:%3 y:%4; bounce %5";
+    QString format = "location x:%1 y:%2; velocity x:%3 y:%4; bounce %5;";
     return format.arg(location().x()).arg(location().y()).
             arg(velocity().x()).arg(velocity().y()).
             arg(bounce());

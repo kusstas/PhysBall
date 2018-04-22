@@ -33,13 +33,10 @@ PhysData Database::getData(QString user)
 
     if (success) {
         QSqlRecord record = query.record();
-        qDebug().noquote() << record.value(TABLE_KEY).toString();
         data.setLocation(record.value(TABLE_LOC_X).toFloat(), record.value(TABLE_LOC_Y).toFloat());
         data.setVelocity(record.value(TABLE_VEL_X).toFloat(), record.value(TABLE_VEL_Y).toFloat());
         data.setBounce(record.value(TABLE_BOUNCE).toFloat());
     }
-
-    qDebug().noquote() << data.toString();
 
     return data;
 }

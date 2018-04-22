@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     // Load data from database
-    if (database_.exist(user)) {
-        ball_.setPhysData(database_.getData(user));
+    if (database_.exist(user_)) {
+        ball_.setPhysData(database_.getData(user_));
     }
 
     // Begin UI connect
@@ -34,7 +34,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     physEngine_.setBottomWall(-300.0f);
     physEngine_.setVectorG(QVector2D(0, -2800));
 
-    draw(ball_.location());
+    locationBall_ = ball_.location();
+    renderer_.updateLocation(locationBall_);
+    draw(locationBall_);
 }
 
 MainWindow::~MainWindow()
@@ -42,7 +44,7 @@ MainWindow::~MainWindow()
     physEngine_.stop();
     renderer_.stop();
 
-    database_.set(user, ball_.physData());
+    database_.set(user_, ball_.physData());
 
     delete ui;
 }
