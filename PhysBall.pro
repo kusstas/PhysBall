@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 CONFIG += qt
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,7 +31,8 @@ SOURCES += \
     phys_worker.cpp \
     render_worker.cpp \
     main_window.cpp \
-    renderer.cpp
+    renderer.cpp \
+    database.cpp
 
 HEADERS += \
     ball.h \
@@ -40,7 +41,8 @@ HEADERS += \
     phys_worker.h \
     render_worker.h \
     main_window.h \
-    renderer.h
+    renderer.h \
+    database.h
 
 FORMS += \
     main_window.ui

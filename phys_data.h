@@ -2,8 +2,7 @@
 #define PHYS_DATA_H
 
 #include <QVector2D>
-
-class QTextStream;
+#include <QString>
 
 struct PhysData
 {
@@ -21,6 +20,8 @@ public:
     void setVelocity(const QVector2D& velocity);
     void setVelocity(float x, float y);
     void setBounce(float bounce);
+
+    QString toString() const;
 
 private:
 

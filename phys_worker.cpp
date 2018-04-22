@@ -6,7 +6,7 @@
 PhysWorker::PhysWorker(PhysEngine& owner, const PhysData& physData, QObject* parent)
     : QObject(parent), owner_(owner), physData_(physData)
 {
-    setPeriodMs(5);
+    setPeriodMs(10);
 
     isWork_ = false;
     isShouldWork_ = false;

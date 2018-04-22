@@ -1,28 +1,33 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 
+#include <QStringBuilder>
 #include <QPainter>
 #include <QDebug>
+
+#include "phys_data.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), physEngine_(ball_)
 {
     ui->setupUi(this);
 
-    connect(ui->pushButtonStart, &QPushButton::clicked, &physEngine_, &PhysEngine::start);
-    connect(ui->pushButtonStop, &QPushButton::clicked, &physEngine_, &PhysEngine::stop);
+    // Load data from database
+    if (database_.exist(user)) {
+        ball_.setPhysData(database_.getData(user));
+    }
 
-    connect(ui->pushButtonStart, &QPushButton::clicked, &renderer_, &Renderer::start);
-    connect(ui->pushButtonStop, &QPushButton::clicked, &renderer_, &Renderer::stop);
-
+    // Begin UI connect
     connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation, Qt::DirectConnection);
     connect(&renderer_, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
 
-    // Log connect
-    connect(&physEngine_, &PhysEngine::started, []() { qDebug() << "-- PhysEngine started"; });
-    connect(&physEngine_, &PhysEngine::finished, []() { qDebug() << "-- PhysEngine finished"; });
-    connect(&renderer_, &Renderer::started, []() { qDebug() << "-- Renderer started"; });
-    connect(&renderer_, &Renderer::finished, []() { qDebug() << "-- Renderer finished"; });
+    connect(&physEngine_, &PhysEngine::updateLocation, [=] (QVector2D loc) {
+        QString format("Location: x: %1, y: %2;");
+        QString log = format.arg(loc.x()).arg(loc.x());
+        ui->txtLocation->setText(log);
+    });
+    // End UI connect
 
+    // Setup phys engine
     physEngine_.setTopWall(300.0f);
     physEngine_.setLeftWall(-300.0f);
     physEngine_.setRightWall(300.0f);
@@ -33,9 +38,16 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 MainWindow::~MainWindow()
-{
+{    
+    physEngine_.stop();
+    renderer_.stop();
+
+    database_.set(user, ball_.physData());
+
     delete ui;
 }
+
+//---------------------------------------------------------
 
 void MainWindow::draw(QVector2D location)
 {
@@ -43,6 +55,8 @@ void MainWindow::draw(QVector2D location)
     locationBall_.setY(size().height() - locationBall_.y());
     update();
 }
+
+//---------------------------------------------------------
 
 void MainWindow::paintEvent(QPaintEvent* event)
 {
@@ -52,9 +66,18 @@ void MainWindow::paintEvent(QPaintEvent* event)
     QMainWindow::paintEvent(event);
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
+//---------------------------------------------------------
+
+void MainWindow::on_btnStartStop_clicked(bool checked)
 {
-    physEngine_.stop();
-    renderer_.stop();
-    QMainWindow::closeEvent(event);
+    if (checked) {
+        physEngine_.start();
+        renderer_.start();
+        ui->btnStartStop->setText("&Stop");
+    }
+    else {
+        physEngine_.stop();
+        renderer_.stop();
+        ui->btnStartStop->setText("&Start");
+    }
 }

@@ -8,6 +8,8 @@
 #include "phys_engine.h"
 #include "renderer.h"
 
+#include "database.h"
+
 namespace Ui
 {
 class MainWindow;
@@ -32,17 +34,23 @@ private:
 
     Ui::MainWindow* ui;
 
+    Database database_;
+
     Ball ball_;
     PhysEngine physEngine_;
     Renderer renderer_;
 
     QVector2D locationBall_;
 
+    QString user = "kusstas";
+
 protected:
 
     void paintEvent(QPaintEvent* event) override;
-    void closeEvent(QCloseEvent* event) override;
 
+private slots:
+
+    void on_btnStartStop_clicked(bool checked);
 };
 
 #endif // MAIN_WINDOW_H

@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include <QDebug>
+
 Renderer::Renderer(QObject* parent) : QObject(parent)
 {
     connect(&thread_, &QThread::started, &worker_, &RenderWorker::doWork);
@@ -8,6 +10,10 @@ Renderer::Renderer(QObject* parent) : QObject(parent)
     connect(&worker_, &RenderWorker::draw, this, &Renderer::draw, Qt::DirectConnection);
     connect(&worker_, &RenderWorker::finished, this, &Renderer::finished, Qt::DirectConnection);
     connect(&worker_, &RenderWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
+
+    // Log connect
+    connect(this, &Renderer::started, []() { qDebug() << "Renderer: started"; });
+    connect(this, &Renderer::finished, []() { qDebug() << "Renderer: finished"; });
 
     worker_.moveToThread(&thread_);
 }

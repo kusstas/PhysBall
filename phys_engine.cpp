@@ -1,6 +1,8 @@
 #include "phys_engine.h"
 #include "ball.h"
 
+#include <QDebug>
+
 PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), ball_(ball), worker_(*this, ball.physData())
 {
     timeScale_ = 1.0f;
@@ -16,6 +18,10 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), ball_(bal
     connect(&worker_, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
     connect(&worker_, &PhysWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
     connect(&worker_, &PhysWorker::finished, this, &PhysEngine::finished);
+
+    // Log connect
+    connect(this, &PhysEngine::started, []() { qDebug() << "PhysEngine: started"; });
+    connect(this, &PhysEngine::finished, []() { qDebug() << "PhysEngine: finished"; });
 
     worker_.moveToThread(&thread_);
 }
