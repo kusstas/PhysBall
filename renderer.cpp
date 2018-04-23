@@ -12,8 +12,8 @@ Renderer::Renderer(QObject* parent) : QObject(parent)
     connect(&worker_, &RenderWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
 
     // Log connect
-    connect(this, &Renderer::started, []() { qDebug() << "Renderer: started"; });
-    connect(this, &Renderer::finished, []() { qDebug() << "Renderer: finished"; });
+    connect(&worker_, &RenderWorker::started, []() { qDebug() << "Renderer: started"; });
+    connect(&worker_, &RenderWorker::finished, []() { qDebug() << "Renderer: finished"; });
 
     worker_.moveToThread(&thread_);
 }

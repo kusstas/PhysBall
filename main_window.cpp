@@ -28,10 +28,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         qDebug().noquote() << "Database: new user - " % user_;
     }
 
-    // Begin UI connect
-    connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation, Qt::DirectConnection);
-    connect(&renderer_, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
 
+    connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation);
+    connect(&renderer_, &Renderer::draw, this, &MainWindow::draw);
+
+    // Begin UI connect
     connect(&physEngine_, &PhysEngine::updateLocation, [=] (QVector2D loc) {
         QString format("Location: x: %1, y: %2;");
         QString log = format.arg(loc.x()).arg(loc.x());

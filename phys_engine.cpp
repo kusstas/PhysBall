@@ -20,8 +20,8 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), ball_(bal
     connect(&worker_, &PhysWorker::finished, this, &PhysEngine::finished);
 
     // Log connect
-    connect(this, &PhysEngine::started, []() { qDebug() << "PhysEngine: started"; });
-    connect(this, &PhysEngine::finished, []() { qDebug() << "PhysEngine: finished"; });
+    connect(&worker_, &PhysWorker::started, []() { qDebug() << "PhysEngine: started"; });
+    connect(&worker_, &PhysWorker::finished, []() { qDebug() << "PhysEngine: finished"; });
 
     worker_.moveToThread(&thread_);
 }
