@@ -11,17 +11,11 @@
 
 Database::Database(QObject* parent) : QObject(parent)
 {
-    if (QFile(NAME).exists()) {
-        open();
-    }
-    else {
-        restore();
-    }
 }
 
 //---------------------------------------------------------
 
-PhysData Database::getData(QString user) const
+PhysData Database::getData(QString user)
 {
     PhysData data;
     QSqlQuery query;
@@ -41,7 +35,7 @@ PhysData Database::getData(QString user) const
     return data;
 }
 
-bool Database::exist(QString user) const
+bool Database::exist(QString user)
 {
     QSqlQuery query;
 
@@ -88,6 +82,18 @@ bool Database::set(QString user, const PhysData& data)
     }
 
     return success;
+}
+
+//---------------------------------------------------------
+
+void Database::connect()
+{
+    if (QFile(NAME).exists()) {
+        open();
+    }
+    else {
+        restore();
+    }
 }
 
 void Database::close()

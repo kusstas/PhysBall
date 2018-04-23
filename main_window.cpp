@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
     dialogInput.close();
 
+    database_.connect();
+
     // Load data from database
     if (database_.exist(user_)) {
         ball_.setPhysData(database_.getData(user_));
