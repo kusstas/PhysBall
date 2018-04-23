@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 
+#include <QInputDialog>
 #include <QStringBuilder>
 #include <QPainter>
 #include <QDebug>
@@ -10,6 +11,11 @@
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), physEngine_(ball_)
 {
     ui->setupUi(this);
+
+    // Get user nickname
+    while (user_.size() < 4) {
+        user_ = QInputDialog::getText(nullptr, "Input dialog", "Enter nickname:");
+    }
 
     // Load data from database
     if (database_.exist(user_)) {

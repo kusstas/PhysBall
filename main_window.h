@@ -42,7 +42,7 @@ private:
 
     QVector2D locationBall_;
 
-    QString user_ = "kusstas";
+    QString user_;
 
 protected:
 
