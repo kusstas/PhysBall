@@ -14,12 +14,13 @@ public:
 
     explicit Database(QObject* parent = nullptr);
 
-    PhysData getData(QString user);
+    PhysData getData(QString user) const;
     bool exist(QString user) const;
 
 public slots:
 
     bool set(QString user, const PhysData& data);
+    void close();
 
 private:
 

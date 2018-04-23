@@ -21,7 +21,7 @@ Database::Database(QObject* parent) : QObject(parent)
 
 //---------------------------------------------------------
 
-PhysData Database::getData(QString user)
+PhysData Database::getData(QString user) const
 {
     PhysData data;
     QSqlQuery query;
@@ -88,6 +88,11 @@ bool Database::set(QString user, const PhysData& data)
     }
 
     return success;
+}
+
+void Database::close()
+{
+    database_.close();
 }
 
 //---------------------------------------------------------

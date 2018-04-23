@@ -13,13 +13,19 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     // Get user nickname
+    QInputDialog dialogInput(this);
     while (user_.size() < 4) {
-        user_ = QInputDialog::getText(nullptr, "Input dialog", "Enter nickname:");
+        user_ = dialogInput.getText(nullptr, "Input dialog", "Enter nickname: ");
     }
+    dialogInput.close();
 
     // Load data from database
     if (database_.exist(user_)) {
         ball_.setPhysData(database_.getData(user_));
+        qDebug().noquote() << "Database: loaded data by " % user_ % " - " % ball_.physData().toString();
+    }
+    else {
+        qDebug().noquote() << "Database: new user - " % user_;
     }
 
     // Begin UI connect
@@ -51,6 +57,7 @@ MainWindow::~MainWindow()
     renderer_.stop();
 
     database_.set(user_, ball_.physData());
+    database_.close();
 
     delete ui;
 }
