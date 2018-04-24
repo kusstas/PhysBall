@@ -1,0 +1,47 @@
+@startuml
+
+title "PhysBall - Sequence Diagram"
+
+actor User
+boundary "MainWindow" as Window
+database Database
+entity Ball
+control PhysEngine
+control Renderer
+entity PhysWorker
+entity RenderWorker
+
+User -> Window : start
+Window -> Database : getData
+Database --> Window : data
+Window -> Ball : setPhysData
+Window -> PhysEngine : start
+PhysEngine ->> PhysWorker : start
+PhysWorker ->> PhysWorker : compute
+Window -> Renderer : start
+Renderer ->> RenderWorker : start
+
+PhysWorker -->> PhysEngine : resultReady
+PhysEngine -> Ball : setPhysData
+PhysEngine -> Renderer : updateLocation
+Renderer -> RenderWorker : updataLocation
+
+RenderWorker ->> Renderer : draw
+Renderer -> Window : draw
+
+User -> Window : stop
+
+Window -> PhysEngine : stop
+PhysEngine -> PhysWorker : stop
+PhysWorker -> PhysEngine : finished
+PhysEngine -> Window : finished
+
+Renderer -> RenderWorker : stop
+RenderWorker -> Renderer : finished
+Renderer -> Window : finished
+
+Window -> Ball : getPhysData
+Ball -> Window : data
+Window -> Database : update
+
+@enduml
