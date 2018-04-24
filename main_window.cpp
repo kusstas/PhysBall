@@ -49,6 +49,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     physEngine_.setBottomWall(-300.0f);
     physEngine_.setVectorG(QVector2D(0, -2800));
 
+    ui->spinTimeScale->setValue(physEngine_.timeScale());
+    ui->spinBounce->setValue(ball_.bounce());
+
     locationBall_ = ball_.location();
     renderer_.updateLocation(locationBall_);
     draw(locationBall_);
@@ -98,4 +101,14 @@ void MainWindow::on_btnStartStop_clicked(bool checked)
         renderer_.stop();
         ui->btnStartStop->setText("&Start");
     }
+}
+
+void MainWindow::on_spinTimeScale_valueChanged(double timeScale)
+{
+    physEngine_.setTimeScale(timeScale);
+}
+
+void MainWindow::on_spinBounce_valueChanged(double bounce)
+{
+    ball_.setBounce(bounce);
 }

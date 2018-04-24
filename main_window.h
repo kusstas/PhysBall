@@ -51,6 +51,8 @@ protected:
 private slots:
 
     void on_btnStartStop_clicked(bool checked);
+    void on_spinTimeScale_valueChanged(double timeScale);
+    void on_spinBounce_valueChanged(double bounce);
 };
 
 #endif // MAIN_WINDOW_H
