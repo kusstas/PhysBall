@@ -6,7 +6,7 @@
 
 Ball::Ball(QObject* parent) : QObject(parent)
 {
-    setVelocity(600, 700);
+    setVelocity(500, 500);
     setBounce(1.0f);
 }
 
