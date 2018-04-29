@@ -14,7 +14,7 @@ PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), ball_(bal
     rightWall_ = 0.0f;
 
     connect(&thread_, &QThread::started, &worker_, &PhysWorker::doWork);
-    connect(&worker_, &PhysWorker::started, this, &PhysEngine::started, Qt::DirectConnection);
+    connect(&worker_, &PhysWorker::started, this, &PhysEngine::started);
     connect(&worker_, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
     connect(&worker_, &PhysWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
     connect(&worker_, &PhysWorker::finished, this, &PhysEngine::finished);

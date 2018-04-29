@@ -31,8 +31,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 
 
-    connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation);
-    connect(&renderer_, &Renderer::draw, this, &MainWindow::draw);
+    connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation, Qt::DirectConnection);
+    connect(&renderer_, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
 
     // Begin UI connect
     connect(&physEngine_, &PhysEngine::updateLocation, [=] (QVector2D loc) {
