@@ -32,7 +32,8 @@ SOURCES += \
     render_worker.cpp \
     main_window.cpp \
     renderer.cpp \
-    database.cpp
+    database.cpp \
+    realtime_database.cpp
 
 HEADERS += \
     ball.h \
@@ -42,7 +43,8 @@ HEADERS += \
     render_worker.h \
     main_window.h \
     renderer.h \
-    database.h
+    database.h \
+    realtime_database.h
 
 FORMS += \
     main_window.ui

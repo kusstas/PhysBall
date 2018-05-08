@@ -12,7 +12,7 @@ class PhysWorker : public QObject
 
 public:
 
-    explicit PhysWorker(PhysEngine& owner, const PhysData& physData, QObject* parent = nullptr);
+    explicit PhysWorker(PhysEngine& owner, PhysData const& physData, QObject* parent = nullptr);
 
     long periodMs() const;
     void setPeriodMs(long periodMs);
@@ -24,7 +24,7 @@ signals:
     void started();
     void finished();
 
-    void resultReady(PhysData physData);
+    void resultReady(PhysData const& physData);
 
 public slots:
 
@@ -33,15 +33,15 @@ public slots:
 
 private:
 
-    bool isWork_;
-    bool isShouldWork_;
+    bool m_isWork;
+    bool m_isShouldWork;
 
-    const PhysEngine& owner_;
-    const PhysData& physData_;
+    const PhysEngine& m_owner;
+    const PhysData& m_physData;
 
-    long periodMs_;
+    long m_periodMs;
 
-    PhysData compute(const PhysData& physData, const QVector2D& vectorG, float time);
+    PhysData compute(PhysData const& physData, QVector2D const& vectorG, float time);
 
 };
 

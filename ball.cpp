@@ -12,58 +12,58 @@ Ball::Ball(QObject* parent) : QObject(parent)
 
 //---------------------------------------------------------
 
-const PhysData& Ball::physData() const
+PhysData const& Ball::physData() const
 {
-    return physData_;
+    return m_physData;
 }
 
-const QVector2D& Ball::location() const
+QVector2D const& Ball::location() const
 {
-    return physData_.location();
+    return m_physData.location();
 }
 
-const QVector2D& Ball::velocity() const
+QVector2D const& Ball::velocity() const
 {
-    return physData_.velocity();
+    return m_physData.velocity();
 }
 
 float Ball::bounce() const
 {
-    return physData_.bounce();
+    return m_physData.bounce();
 }
 
 //---------------------------------------------------------
 
-void Ball::setPhysData(const PhysData& physData)
+void Ball::setPhysData(PhysData const& physData)
 {
-    physData_ = physData;
+    m_physData = physData;
 }
 
-void Ball::setLocation(const QVector2D& location)
+void Ball::setLocation(QVector2D const& location)
 {
-    physData_.setLocation(location);
+    m_physData.setLocation(location);
 }
 
 void Ball::setLocation(float x, float y)
 {
-    physData_.setLocation(x, y);
+    m_physData.setLocation(x, y);
 }
 
 //---------------------------------------------------------
 
 void Ball::setVelocity(const QVector2D& velocity)
 {
-    physData_.setVelocity(velocity);
+    m_physData.setVelocity(velocity);
 }
 
 void Ball::setVelocity(float x, float y)
 {
-    physData_.setVelocity(x, y);
+    m_physData.setVelocity(x, y);
 }
 
 //---------------------------------------------------------
 
 void Ball::setBounce(float bounce)
 {
-    physData_.setBounce(bounce);
+    m_physData.setBounce(bounce);
 }

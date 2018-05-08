@@ -14,18 +14,27 @@ public:
 
     explicit Database(QObject* parent = nullptr);
 
-    PhysData getData(QString user);
-    bool exist(QString user);
+    void setUser(QString user);
+    PhysData getData();
+    bool exist();
+    bool isWriten() const;
+
+signals:
+
+    void startedWrite();
+    void finishedWrite();
 
 public slots:
 
-    bool set(QString user, const PhysData& data);
+    bool write(PhysData const& data);
     void connect();
     void close();
 
 private:
 
-    QSqlDatabase database_;
+    bool m_isWriten;
+    QSqlDatabase m_database;
+    QString m_user;
 
     const QString TYPE         = "QSQLITE";
     const QString NAME         = "phys_ball.db";

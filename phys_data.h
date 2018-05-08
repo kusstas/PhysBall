@@ -10,14 +10,14 @@ public:
 
     PhysData();
 
-    const QVector2D& location() const;
-    const QVector2D& velocity() const;
+    QVector2D const& location() const;
+    QVector2D const& velocity() const;
     float bounce() const;
 
-    void setLocation(const QVector2D& location);
+    void setLocation(QVector2D const& location);
     void setLocation(float x, float y);
 
-    void setVelocity(const QVector2D& velocity);
+    void setVelocity(QVector2D const& velocity);
     void setVelocity(float x, float y);
     void setBounce(float bounce);
 
@@ -25,9 +25,9 @@ public:
 
 private:
 
-    QVector2D location_;
-    QVector2D velocity_;
-    float bounce_;
+    QVector2D m_location;
+    QVector2D m_velocity;
+    float m_bounce;
 
 };
 

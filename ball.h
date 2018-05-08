@@ -10,25 +10,25 @@ public:
 
     explicit Ball(QObject* parent = nullptr);
 
-    const PhysData& physData() const;
+    PhysData const& physData() const;
 
-    const QVector2D& location() const;
-    const QVector2D& velocity() const;
+    QVector2D const& location() const;
+    QVector2D const& velocity() const;
 
     float bounce() const;
 
-    void setPhysData(const PhysData& physData);
+    void setPhysData(PhysData const& physData);
 
-    void setLocation(const QVector2D& location);
+    void setLocation(QVector2D const& location);
     void setLocation(float x, float y);
 
-    void setVelocity(const QVector2D& velocity);
+    void setVelocity(QVector2D const& velocity);
     void setVelocity(float x, float y);
     void setBounce(float bounce);
 
 private:
 
-    PhysData physData_;
+    PhysData m_physData;
 };
 
 #endif // BALL_H

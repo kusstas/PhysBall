@@ -3,47 +3,48 @@
 
 #include <QDebug>
 
-PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), ball_(ball), worker_(*this, ball.physData())
+PhysEngine::PhysEngine(Ball& ball, QObject* parent) : QObject(parent), m_ball(ball), m_worker(*this, ball.physData())
 {
-    timeScale_ = 1.0f;
-    vectorG_ = QVector2D(0, -2800.0f);
+    m_timeScale = 1.0f;
+    m_vectorG = QVector2D(0, -2800.0f);
 
-    topWall_ = 0.0f;
-    bottomWall_ = 0.0f;
-    leftWall_ = 0.0f;
-    rightWall_ = 0.0f;
+    m_topWall = 0.0f;
+    m_bottomWall = 0.0f;
+    m_leftWall = 0.0f;
+    m_rightWall = 0.0f;
 
-    connect(&thread_, &QThread::started, &worker_, &PhysWorker::doWork);
-    connect(&worker_, &PhysWorker::started, this, &PhysEngine::started);
-    connect(&worker_, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
-    connect(&worker_, &PhysWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
-    connect(&worker_, &PhysWorker::finished, this, &PhysEngine::finished);
+    connect(&m_thread, &QThread::started, &m_worker, &PhysWorker::doWork);
+    connect(&m_worker, &PhysWorker::started, this, &PhysEngine::started);
+    connect(&m_worker, &PhysWorker::resultReady, this, &PhysEngine::resultReady, Qt::DirectConnection);
+    connect(&m_worker, &PhysWorker::finished, &m_thread, &QThread::quit, Qt::DirectConnection);
+    connect(&m_worker, &PhysWorker::finished, this, &PhysEngine::finished);
 
     // Log connect
-    connect(&worker_, &PhysWorker::started, []() { qDebug() << "PhysEngine: started"; });
-    connect(&worker_, &PhysWorker::finished, []() { qDebug() << "PhysEngine: finished"; });
+    connect(&m_worker, &PhysWorker::started, []() { qDebug() << "PhysEngine: started"; });
+    connect(&m_worker, &PhysWorker::finished, []() { qDebug() << "PhysEngine: finished"; });
 
-    worker_.moveToThread(&thread_);
+    m_worker.moveToThread(&m_thread);
 }
 
 //---------------------------------------------------------
 
 void PhysEngine::start()
 {
-    thread_.start();
+    m_thread.start();
 }
 
 void PhysEngine::stop()
 {
-    worker_.stop();
-    thread_.wait();
+    m_worker.stop();
+    m_thread.wait();
 }
 
 //---------------------------------------------------------
 
-void PhysEngine::resultReady(PhysData physData)
+void PhysEngine::resultReady(PhysData const& physData)
 {
-    ball_.setPhysData(physData);
+    emit updatePhysData(physData);
+    m_ball.setPhysData(physData);
     emit updateLocation(physData.location());
 }
 
@@ -51,71 +52,71 @@ void PhysEngine::resultReady(PhysData physData)
 
 bool PhysEngine::isWork() const
 {
-    return worker_.isWork();
+    return m_worker.isWork();
 }
 
 float PhysEngine::timeScale() const
 {
-    return timeScale_;
+    return m_timeScale;
 }
 
 const QVector2D& PhysEngine::vectorG() const
 {
-    return vectorG_;
+    return m_vectorG;
 }
 
 //---------------------------------------------------------
 
 float PhysEngine::topWall() const
 {
-    return topWall_;
+    return m_topWall;
 }
 
 float PhysEngine::leftWall() const
 {
-    return leftWall_;
+    return m_leftWall;
 }
 
 float PhysEngine::bottomWall() const
 {
-    return bottomWall_;
+    return m_bottomWall;
 }
 
 float PhysEngine::rightWall() const
 {
-    return rightWall_;
+    return m_rightWall;
 }
 
 //---------------------------------------------------------
 
 void PhysEngine::setTimeScale(float scale)
 {
-    timeScale_ = scale;
+    m_timeScale = scale;
 }
 
-void PhysEngine::setVectorG(const QVector2D& vectorG)
+void PhysEngine::setVectorG(QVector2D const& vectorG)
 {
-    this->vectorG_ = vectorG;
+    this->m_vectorG = vectorG;
 }
 
 //---------------------------------------------------------
 
 void PhysEngine::setTopWall(float yLine)
 {
-    topWall_ = yLine;
+    m_topWall = yLine;
 }
 
 void PhysEngine::setLeftWall(float xLine)
 {
-    leftWall_ = xLine;
+    m_leftWall = xLine;
 }
 
 void PhysEngine::setBottomWall(float yLine)
 {
-    bottomWall_ = yLine;
+    m_bottomWall = yLine;
 }
 
 void PhysEngine::setRightWall(float xLine)
 {
-    rightWall_ = xLine;
+    m_rightWall = xLine;
 }

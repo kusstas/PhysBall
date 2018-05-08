@@ -26,23 +26,22 @@ public:
 
 public slots:
 
-    void draw(QVector2D location);
+    void draw(QVector2D const& location);
 
 private:
 
-    const int radiusBall_ = 50;
+    int const m_radiusBall = 50;
 
     Ui::MainWindow* ui;
 
-    Database database_;
+    QThread m_threadDb;
+    Database m_database;
 
-    Ball ball_;
-    PhysEngine physEngine_;
-    Renderer renderer_;
+    Ball m_ball;
+    PhysEngine m_physEngine;
+    Renderer m_renderer;
 
-    QVector2D locationBall_;
-
-    QString user_;
+    QVector2D m_locationBall;
 
 protected:
 

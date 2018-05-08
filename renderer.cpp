@@ -4,36 +4,36 @@
 
 Renderer::Renderer(QObject* parent) : QObject(parent)
 {
-    connect(&thread_, &QThread::started, &worker_, &RenderWorker::doWork);
-    connect(this, &Renderer::updateLocation, &worker_, &RenderWorker::updateLocation, Qt::DirectConnection);
-    connect(&worker_, &RenderWorker::started, this, &Renderer::started);
-    connect(&worker_, &RenderWorker::draw, this, &Renderer::draw, Qt::DirectConnection);
-    connect(&worker_, &RenderWorker::finished, this, &Renderer::finished);
-    connect(&worker_, &RenderWorker::finished, &thread_, &QThread::quit, Qt::DirectConnection);
+    connect(&m_thread, &QThread::started, &m_worker, &RenderWorker::doWork);
+    connect(this, &Renderer::updateLocation, &m_worker, &RenderWorker::updateLocation, Qt::DirectConnection);
+    connect(&m_worker, &RenderWorker::started, this, &Renderer::started);
+    connect(&m_worker, &RenderWorker::draw, this, &Renderer::draw, Qt::DirectConnection);
+    connect(&m_worker, &RenderWorker::finished, this, &Renderer::finished);
+    connect(&m_worker, &RenderWorker::finished, &m_thread, &QThread::quit, Qt::DirectConnection);
 
     // Log connect
-    connect(&worker_, &RenderWorker::started, []() { qDebug() << "Renderer: started"; });
-    connect(&worker_, &RenderWorker::finished, []() { qDebug() << "Renderer: finished"; });
+    connect(&m_worker, &RenderWorker::started, []() { qDebug() << "Renderer: started"; });
+    connect(&m_worker, &RenderWorker::finished, []() { qDebug() << "Renderer: finished"; });
 
-    worker_.moveToThread(&thread_);
+    m_worker.moveToThread(&m_thread);
 }
 
 //---------------------------------------------------------
 
 bool Renderer::isWork() const
 {
-    return worker_.isWork();
+    return m_worker.isWork();
 }
 
 //---------------------------------------------------------
 
 void Renderer::start()
 {
-    thread_.start();
+    m_thread.start();
 }
 
 void Renderer::stop()
 {
-    worker_.stop();
-    thread_.wait();
+    m_worker.stop();
+    m_thread.wait();
 }

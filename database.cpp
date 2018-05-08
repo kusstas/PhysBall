@@ -11,17 +11,23 @@
 
 Database::Database(QObject* parent) : QObject(parent)
 {
+    m_isWriten = false;
 }
 
 //---------------------------------------------------------
 
-PhysData Database::getData(QString user)
+void Database::setUser(QString user)
+{
+    m_user = user;
+}
+
+PhysData Database::getData()
 {
     PhysData data;
     QSqlQuery query;
 
     query.prepare("SELECT * FROM " % TABLE_NAME % " WHERE " % TABLE_KEY % " = :u");
-    query.bindValue(":u", user);
+    query.bindValue(":u", m_user);
 
     bool success = query.exec() && query.next();
 
@@ -35,23 +41,30 @@ PhysData Database::getData(QString user)
     return data;
 }
 
-bool Database::exist(QString user)
+bool Database::exist()
 {
     QSqlQuery query;
 
     query.prepare("SELECT 1 FROM " % TABLE_NAME % " WHERE " % TABLE_KEY % " = :u");
-    query.bindValue(":u", user);
+    query.bindValue(":u", m_user);
 
     return query.exec() && query.next();
 }
 
+bool Database::isWriten() const
+{
+    return m_isWriten;
+}
+
 //---------------------------------------------------------
 
-bool Database::set(QString user, const PhysData& data)
+bool Database::write(PhysData const& data)
 {
+    m_isWriten = true;
+    emit startedWrite();
     QSqlQuery query;
 
-    if (exist(user)) {
+    if (exist()) {
         query.prepare("UPDATE " % TABLE_NAME % " SET " %
                       TABLE_LOC_X  % " = :lx, " % TABLE_LOC_Y % " = :ly, " %
                       TABLE_VEL_X  % " = :vx, " % TABLE_VEL_Y % " = :vy, " %
@@ -65,7 +78,7 @@ bool Database::set(QString user, const PhysData& data)
                       TABLE_BOUNCE % ") VALUES (:u, :lx, :ly, :vx, :vy, :b)");
     }
 
-    query.bindValue(":u", user);
+    query.bindValue(":u", m_user);
     query.bindValue(":lx", QString::number(data.location().x()));
     query.bindValue(":ly", QString::number(data.location().y()));
     query.bindValue(":vx", QString::number(data.velocity().x()));
@@ -75,12 +88,13 @@ bool Database::set(QString user, const PhysData& data)
     bool success = query.exec();
 
     if (success) {
-        qDebug().noquote() << "Database: setup record by " % user % " - " % data.toString();
+        qDebug().noquote() << "Database: setup record by " % m_user % " - " % data.toString();
     }
     else {
-        qDebug().noquote() << "Database: failed record by " % user % " - " % data.toString();
+        qDebug().noquote() << "Database: failed record by " % m_user % " - " % data.toString();
     }
-
+    m_isWriten = false;
+    emit finishedWrite();
     return success;
 }
 
@@ -98,18 +112,18 @@ void Database::connect()
 
 void Database::close()
 {
-    database_.close();
+    m_database.close();
 }
 
 //---------------------------------------------------------
 
 bool Database::open()
 {
-    database_ = QSqlDatabase::addDatabase(TYPE);
-    database_.setDatabaseName(NAME);
-    database_.setHostName(HOST_NAME);
+    m_database = QSqlDatabase::addDatabase(TYPE);
+    m_database.setDatabaseName(NAME);
+    m_database.setHostName(HOST_NAME);
 
-    bool success = database_.open();
+    bool success = m_database.open();
 
     if (success) {
         qDebug() << "Database: open";

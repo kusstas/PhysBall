@@ -3,60 +3,59 @@
 
 #include <QThread>
 
-PhysWorker::PhysWorker(PhysEngine& owner, const PhysData& physData, QObject* parent)
-    : QObject(parent), owner_(owner), physData_(physData)
+PhysWorker::PhysWorker(PhysEngine& owner, PhysData const& physData, QObject* parent)
+    : QObject(parent), m_owner(owner), m_physData(physData)
 {
     setPeriodMs(10);
 
-    isWork_ = false;
-    isShouldWork_ = false;
+    m_isWork = false;
+    m_isShouldWork = false;
 }
 
 //---------------------------------------------------------
 
 void PhysWorker::doWork()
 {
-    isShouldWork_ = true;
-    isWork_ = true;
+    m_isShouldWork = true;
+    m_isWork = true;
 
     emit started();
-    while(isShouldWork_)
-    {
-        float time = owner_.timeScale() * periodMs() / 1000;
-        PhysData new_pd = compute(physData_, owner_.vectorG(), time);
+    while(m_isShouldWork) {
+        float time = m_owner.timeScale() * periodMs() / 1000;
+        PhysData new_pd = compute(m_physData, m_owner.vectorG(), time);
         emit resultReady(new_pd);
         QThread::msleep(periodMs());
     }
-    isWork_ = false;
+    m_isWork = false;
     emit finished();
 }
 
 void PhysWorker::stop()
 {
-    isShouldWork_ = false;
+    m_isShouldWork = false;
 }
 
 //---------------------------------------------------------
 
 bool PhysWorker::isWork() const
 {
-    return isWork_;
+    return m_isWork;
 }
 
 long PhysWorker::periodMs() const
 {
-    return periodMs_;
+    return m_periodMs;
 }
 
 void PhysWorker::setPeriodMs(long periodMs)
 {
     Q_ASSERT(periodMs > 0);
-    periodMs_ = periodMs;
+    m_periodMs = periodMs;
 }
 
 //---------------------------------------------------------
 
-PhysData PhysWorker::compute(const PhysData& physData, const QVector2D& vectorG, float time)
+PhysData PhysWorker::compute(PhysData const& physData, QVector2D const& vectorG, float time)
 {
     PhysData pd;
     pd.setBounce(physData.bounce());
@@ -66,25 +65,21 @@ PhysData PhysWorker::compute(const PhysData& physData, const QVector2D& vectorG,
     v += vectorG * time;
     loc += v * time;
 
-    if (loc.x() < owner_.leftWall())
-    {
-        loc.setX(owner_.leftWall());
+    if (loc.x() < m_owner.leftWall()) {
+        loc.setX(m_owner.leftWall());
         v.setX(v.x() * -pd.bounce());
     }
-    else if (loc.x() > owner_.rightWall())
-    {
-        loc.setX(owner_.rightWall());
+    else if (loc.x() > m_owner.rightWall()) {
+        loc.setX(m_owner.rightWall());
         v.setX(v.x() * -pd.bounce());
     }
 
-    if (loc.y() > owner_.topWall())
-    {
-        loc.setY(owner_.topWall());
+    if (loc.y() > m_owner.topWall()) {
+        loc.setY(m_owner.topWall());
         v.setY(v.y() * -pd.bounce());
     }
-    else if (loc.y() < owner_.bottomWall())
-    {
-        loc.setY(owner_.bottomWall());
+    else if (loc.y() < m_owner.bottomWall()) {
+        loc.setY(m_owner.bottomWall());
         v.setY(v.y() * -pd.bounce());;
     }
 

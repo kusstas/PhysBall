@@ -8,34 +8,39 @@
 
 #include "phys_data.h"
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), physEngine_(ball_)
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), m_physEngine(m_ball)
 {
     ui->setupUi(this);
 
     // Get user nickname
     QInputDialog dialogInput(this);
-    while (user_.size() < 4) {
-        user_ = dialogInput.getText(nullptr, "Input dialog", "Enter nickname: ");
+    QString user;
+    while (user.size() < 4) {
+        user = dialogInput.getText(nullptr, "Input dialog", "Enter nickname: ");
     }
     dialogInput.close();
 
-    database_.connect();
+    m_database.moveToThread(&m_threadDb);
+    m_database.connect();
+    m_threadDb.start();
 
+    m_database.setUser(user);
     // Load data from database
-    if (database_.exist(user_)) {
-        ball_.setPhysData(database_.getData(user_));
-        qDebug().noquote() << "Database: loaded data by " % user_ % " - " % ball_.physData().toString();
+    if (m_database.exist()) {
+        m_ball.setPhysData(m_database.getData());
+        qDebug().noquote() << "Database: loaded data by " % user % " - " % m_ball.physData().toString();
     }
     else {
-        qDebug().noquote() << "Database: new user - " % user_;
+        qDebug().noquote() << "Database: new user - " % user;
     }
 
 
-    connect(&physEngine_, &PhysEngine::updateLocation, &renderer_, &Renderer::updateLocation, Qt::DirectConnection);
-    connect(&renderer_, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
+    connect(&m_physEngine, &PhysEngine::updateLocation, &m_renderer, &Renderer::updateLocation, Qt::DirectConnection);
+    connect(&m_physEngine, &PhysEngine::updatePhysData, &m_database, &Database::write);
+    connect(&m_renderer, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
 
     // Begin UI connect
-    connect(&physEngine_, &PhysEngine::updateLocation, [=] (QVector2D loc) {
+    connect(&m_physEngine, &PhysEngine::updateLocation, [=] (QVector2D loc) {
         QString format("Location: x: %1, y: %2;");
         QString log = format.arg(loc.x()).arg(loc.x());
         ui->txtLocation->setText(log);
@@ -43,37 +48,39 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     // End UI connect
 
     // Setup phys engine
-    physEngine_.setTopWall(300.0f);
-    physEngine_.setLeftWall(-300.0f);
-    physEngine_.setRightWall(300.0f);
-    physEngine_.setBottomWall(-300.0f);
-    physEngine_.setVectorG(QVector2D(0, -2800));
+    m_physEngine.setTopWall(300.0f);
+    m_physEngine.setLeftWall(-300.0f);
+    m_physEngine.setRightWall(300.0f);
+    m_physEngine.setBottomWall(-300.0f);
+    m_physEngine.setVectorG(QVector2D(0, -2800));
 
-    ui->spinTimeScale->setValue(physEngine_.timeScale());
-    ui->spinBounce->setValue(ball_.bounce());
+    ui->spinTimeScale->setValue(m_physEngine.timeScale());
+    ui->spinBounce->setValue(m_ball.bounce());
 
-    locationBall_ = ball_.location();
-    renderer_.updateLocation(locationBall_);
-    draw(locationBall_);
+    m_locationBall = m_ball.location();
+    m_renderer.updateLocation(m_locationBall);
+    draw(m_locationBall);
 }
 
 MainWindow::~MainWindow()
 {    
-    physEngine_.stop();
-    renderer_.stop();
+    m_physEngine.stop();
+    m_renderer.stop();
 
-    database_.set(user_, ball_.physData());
-    database_.close();
+    //m_database.write(m_user, m_ball.physData());
+    m_database.close();
+    m_threadDb.quit();
+    m_threadDb.wait();
 
     delete ui;
 }
 
 //---------------------------------------------------------
 
-void MainWindow::draw(QVector2D location)
+void MainWindow::draw(QVector2D const& location)
 {
-    locationBall_ = location + QVector2D(size().width() / 2, size().height() / 2);
-    locationBall_.setY(size().height() - locationBall_.y());
+    m_locationBall = location + QVector2D(size().width() / 2, size().height() / 2);
+    m_locationBall.setY(size().height() - m_locationBall.y());
     update();
 }
 
@@ -82,7 +89,7 @@ void MainWindow::draw(QVector2D location)
 void MainWindow::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-    painter.drawEllipse(locationBall_.x(), locationBall_.y(), radiusBall_, radiusBall_);
+    painter.drawEllipse(m_locationBall.x(), m_locationBall.y(), m_radiusBall, m_radiusBall);
 
     QMainWindow::paintEvent(event);
 }
@@ -92,23 +99,23 @@ void MainWindow::paintEvent(QPaintEvent* event)
 void MainWindow::on_btnStartStop_clicked(bool checked)
 {
     if (checked) {
-        physEngine_.start();
-        renderer_.start();
+        m_physEngine.start();
+        m_renderer.start();
         ui->btnStartStop->setText("&Stop");
     }
     else {
-        physEngine_.stop();
-        renderer_.stop();
+        m_physEngine.stop();
+        m_renderer.stop();
         ui->btnStartStop->setText("&Start");
     }
 }
 
 void MainWindow::on_spinTimeScale_valueChanged(double timeScale)
 {
-    physEngine_.setTimeScale(timeScale);
+    m_physEngine.setTimeScale(timeScale);
 }
 
 void MainWindow::on_spinBounce_valueChanged(double bounce)
 {
-    ball_.setBounce(bounce);
+    m_ball.setBounce(bounce);
 }

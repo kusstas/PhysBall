@@ -5,51 +5,50 @@ RenderWorker::RenderWorker(QObject* parent) : QObject(parent)
 {
     setPeriodMs(20);
 
-    isWork_ = false;
-    isShouldWork_ = false;
+    m_isWork = false;
+    m_isShouldWork = false;
 }
 
 //---------------------------------------------------------
 
 void RenderWorker::doWork()
 {
-    isShouldWork_ = true;
-    isWork_ = true;
+    m_isShouldWork = true;
+    m_isWork = true;
 
     emit started();
-    while(isShouldWork_)
-    {
-        emit draw(location_);
+    while(m_isShouldWork) {
+        emit draw(m_location);
         QThread::msleep(periodMs());
     }
-    isWork_ = false;
+    m_isWork = false;
     emit finished();
 }
 
 void RenderWorker::stop()
 {
-    isShouldWork_ = false;
+    m_isShouldWork = false;
 }
 
-void RenderWorker::updateLocation(QVector2D location)
+void RenderWorker::updateLocation(QVector2D const& location)
 {
-    location_ = location;
+    m_location = location;
 }
 
 //---------------------------------------------------------
 
 bool RenderWorker::isWork() const
 {
-    return isWork_;
+    return m_isWork;
 }
 
 long RenderWorker::periodMs() const
 {
-    return periodMs_;
+    return m_periodMs;
 }
 
 void RenderWorker::setPeriodMs(long periodMs)
 {
     Q_ASSERT(periodMs > 0);
-    periodMs_ = periodMs;
+    m_periodMs = periodMs;
 }

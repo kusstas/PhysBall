@@ -1,55 +1,55 @@
 #include "phys_data.h"
 
-PhysData::PhysData() : bounce_(1.0f)
+PhysData::PhysData() : m_bounce(1.0f)
 {
 }
 
 //---------------------------------------------------------
 
-const QVector2D& PhysData::location() const
+QVector2D const& PhysData::location() const
 {
-    return location_;
+    return m_location;
 }
 
-const QVector2D& PhysData::velocity() const
+QVector2D const& PhysData::velocity() const
 {
-    return velocity_;
+    return m_velocity;
 }
 
 float PhysData::bounce() const
 {
-    return bounce_;
+    return m_bounce;
 }
 
 //---------------------------------------------------------
 
-void PhysData::setLocation(const QVector2D& location)
+void PhysData::setLocation(QVector2D const& location)
 {
-    location_ = location;
+    m_location = location;
 }
 
 void PhysData::setLocation(float x, float y)
 {
-    location_ = QVector2D(x, y);
+    m_location = QVector2D(x, y);
 }
 
 //---------------------------------------------------------
 
 void PhysData::setVelocity(const QVector2D& velocity)
 {
-    velocity_ = velocity;
+    m_velocity = velocity;
 }
 
 void PhysData::setVelocity(float x, float y)
 {
-    velocity_ = QVector2D(x, y);
+    m_velocity = QVector2D(x, y);
 }
 
 void PhysData::setBounce(float bounce)
 {
     if (bounce >= 0.0f)
     {
-        bounce_ = bounce;
+        m_bounce = bounce;
     }
 }
 

@@ -19,7 +19,7 @@ public:
     bool isWork() const;
 
     float timeScale() const;
-    const QVector2D& vectorG() const;
+    QVector2D const& vectorG() const;
 
     float topWall() const;
     float leftWall() const;
@@ -27,7 +27,7 @@ public:
     float rightWall() const;
 
     void setTimeScale(float scale);
-    void setVectorG(const QVector2D& vectorG_);
+    void setVectorG(QVector2D const& m_vectorG);
 
     void setTopWall(float yLine);
     void setLeftWall(float xLine);
@@ -38,7 +38,8 @@ signals:
 
     void started();
     void finished();
-    void updateLocation(QVector2D vector2);
+    void updateLocation(QVector2D const& vector2);
+    void updatePhysData(PhysData const& data);
 
 public slots:
 
@@ -47,22 +48,22 @@ public slots:
 
 private slots:
 
-    void resultReady(PhysData physData);
+    void resultReady(PhysData const& physData);
 
 private:
 
-    Ball& ball_;
+    Ball& m_ball;
 
-    QThread thread_;
-    PhysWorker worker_;
+    QThread m_thread;
+    PhysWorker m_worker;
 
-    float topWall_;
-    float leftWall_;
-    float bottomWall_;
-    float rightWall_;
+    float m_topWall;
+    float m_leftWall;
+    float m_bottomWall;
+    float m_rightWall;
 
-    float timeScale_;
-    QVector2D vectorG_;
+    float m_timeScale;
+    QVector2D m_vectorG;
 
 };
 

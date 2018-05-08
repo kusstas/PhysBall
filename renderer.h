@@ -21,8 +21,8 @@ signals:
     void started();
     void finished();
 
-    void draw(QVector2D location);
-    void updateLocation(QVector2D location);
+    void draw(QVector2D const& location);
+    void updateLocation(QVector2D const& location);
 
 public slots:
 
@@ -31,8 +31,8 @@ public slots:
 
 private:
 
-    RenderWorker worker_;
-    QThread thread_;
+    RenderWorker m_worker;
+    QThread m_thread;
 
 };
 
