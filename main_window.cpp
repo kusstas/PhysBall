@@ -20,9 +20,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
     dialogInput.close();
 
-    m_database.moveToThread(&m_threadDb);
     m_database.connect();
-    m_threadDb.start();
 
     m_database.setUser(user);
     // Load data from database
@@ -36,8 +34,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
     connect(&m_physEngine, &PhysEngine::updateLocation, &m_renderer, &Renderer::updateLocation, Qt::DirectConnection);
-    connect(&m_physEngine, &PhysEngine::updatePhysData, &m_database, &Database::write);
-    connect(&m_renderer, &Renderer::draw, this, &MainWindow::draw, Qt::DirectConnection);
+    connect(&m_physEngine, &PhysEngine::updatePhysData, &m_database, &RealtimeDatabase::update, Qt::DirectConnection);
+    connect(&m_renderer, &Renderer::draw, this, &MainWindow::draw);
 
     // Begin UI connect
     connect(&m_physEngine, &PhysEngine::updateLocation, [=] (QVector2D loc) {
@@ -66,11 +64,7 @@ MainWindow::~MainWindow()
 {    
     m_physEngine.stop();
     m_renderer.stop();
-
-    //m_database.write(m_user, m_ball.physData());
     m_database.close();
-    m_threadDb.quit();
-    m_threadDb.wait();
 
     delete ui;
 }

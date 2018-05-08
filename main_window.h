@@ -8,7 +8,7 @@
 #include "phys_engine.h"
 #include "renderer.h"
 
-#include "database.h"
+#include "realtime_database.h"
 
 namespace Ui
 {
@@ -33,9 +33,7 @@ private:
     int const m_radiusBall = 50;
 
     Ui::MainWindow* ui;
-
-    QThread m_threadDb;
-    Database m_database;
+    RealtimeDatabase m_database;
 
     Ball m_ball;
     PhysEngine m_physEngine;

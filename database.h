@@ -15,8 +15,8 @@ public:
     explicit Database(QObject* parent = nullptr);
 
     void setUser(QString user);
-    PhysData getData();
-    bool exist();
+    PhysData getData() const;
+    bool exist() const;
     bool isWriten() const;
 
 signals:

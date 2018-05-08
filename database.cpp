@@ -21,7 +21,7 @@ void Database::setUser(QString user)
     m_user = user;
 }
 
-PhysData Database::getData()
+PhysData Database::getData() const
 {
     PhysData data;
     QSqlQuery query;
@@ -41,7 +41,7 @@ PhysData Database::getData()
     return data;
 }
 
-bool Database::exist()
+bool Database::exist() const
 {
     QSqlQuery query;
 
@@ -86,13 +86,6 @@ bool Database::write(PhysData const& data)
     query.bindValue(":b",  QString::number(data.bounce()));
 
     bool success = query.exec();
-
-    if (success) {
-        qDebug().noquote() << "Database: setup record by " % m_user % " - " % data.toString();
-    }
-    else {
-        qDebug().noquote() << "Database: failed record by " % m_user % " - " % data.toString();
-    }
     m_isWriten = false;
     emit finishedWrite();
     return success;
@@ -113,6 +106,7 @@ void Database::connect()
 void Database::close()
 {
     m_database.close();
+    qDebug() << "Database: closed";
 }
 
 //---------------------------------------------------------
