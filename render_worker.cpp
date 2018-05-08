@@ -3,7 +3,7 @@
 
 RenderWorker::RenderWorker(QObject* parent) : QObject(parent)
 {
-    setPeriodMs(17);
+    setPeriodMs(24);
 
     m_isWork = false;
     m_isShouldWork = false;
